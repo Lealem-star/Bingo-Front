@@ -6,8 +6,6 @@ import Scores from './pages/Scores';
 import History from './pages/History';
 import Wallet from './pages/Wallet';
 import Profile from './pages/Profile';
-import { I18nProvider } from './lib/i18n';
-import { initTelegramWebApp } from './lib/telegram/webapp';
 import { AuthProvider } from './lib/auth/AuthProvider.jsx';
 
 function App() {
@@ -15,10 +13,6 @@ function App() {
   const [selectedStake, setSelectedStake] = useState(null);
   const [selectedCartela, setSelectedCartela] = useState(null);
 
-  // init Telegram (no-op on web)
-  if (typeof window !== 'undefined') {
-    initTelegramWebApp();
-  }
 
   const handleStakeSelected = (stake) => {
     setSelectedStake(stake);
@@ -56,13 +50,11 @@ function App() {
   };
 
   return (
-    <I18nProvider defaultLocale={(window?.Telegram?.WebApp?.initDataUnsafe?.user?.language_code) || 'en'}>
-      <AuthProvider>
-        <div className="App">
-          {renderPage()}
-        </div>
-      </AuthProvider>
-    </I18nProvider>
+    <AuthProvider>
+      <div className="App">
+        {renderPage()}
+      </div>
+    </AuthProvider>
   );
 }
 
