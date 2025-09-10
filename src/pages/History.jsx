@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BottomNav from '../components/BottomNav';
 import { useAuth } from '../lib/auth/AuthProvider';
 import { apiFetch } from '../lib/api/client';
@@ -32,6 +32,35 @@ export default function History({ onNavigate }) {
         return true;
     });
 
+    // Build game history entries grouped by gameId from transactions
+    const gameEntries = useMemo(() => {
+        const byGame = new Map();
+        for (const t of transactions) {
+            if (!['game_bet', 'game_win'].includes(t.type)) continue;
+            const id = t.gameId || t.description || 'Unknown';
+            if (!byGame.has(id)) byGame.set(id, { gameId: id, stake: 0, prize: 0, winners: null, date: new Date(t.createdAt) });
+            const entry = byGame.get(id);
+            // keep latest date for display
+            try { const d = new Date(t.createdAt); if (d > entry.date) entry.date = d; } catch { }
+            if (t.type === 'game_bet') {
+                entry.stake = Math.abs(Number(t.amount || 0));
+            }
+            if (t.type === 'game_win') {
+                entry.prize += Math.abs(Number(t.amount || 0));
+            }
+            // Try to parse winners from description like "Winners: 3"
+            if (!entry.winners && typeof t.description === 'string') {
+                const m = t.description.match(/winners?:\s*(\d+)/i);
+                if (m) entry.winners = Number(m[1]);
+            }
+        }
+        const list = Array.from(byGame.values()).sort((a, b) => b.date - a.date);
+        return list;
+    }, [transactions]);
+
+    const totalGames = gameEntries.length;
+    const gamesWon = gameEntries.filter(g => Number(g.prize) > 0).length;
+
     const getTransactionIcon = (type) => {
         switch (type) {
             case 'deposit': return '💰';
@@ -53,77 +82,54 @@ export default function History({ onNavigate }) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
-            <header className="p-6 pt-16 text-center">
-                <h1 className="text-3xl font-bold text-white mb-2">📜 Transaction History</h1>
-                <p className="text-sm text-pink-300">Your Love Bingo Journey</p>
+        <div className="min-h-screen overflow-y-auto pb-28 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+            <header className="p-6 pt-16">
+                <h1 className="text-2xl font-extrabold text-white">Game History</h1>
             </header>
 
-            <main className="p-6 space-y-6">
-                {/* Filter Tabs */}
-                <div className="flex gap-2 bg-slate-800/40 rounded-lg p-1 border border-slate-700/50">
-                    <button
-                        onClick={() => setActiveTab('all')}
-                        className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'all'
-                                ? 'bg-pink-500 text-white'
-                                : 'text-slate-300 hover:text-white'
-                            }`}
-                    >
-                        All
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('deposits')}
-                        className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'deposits'
-                                ? 'bg-pink-500 text-white'
-                                : 'text-slate-300 hover:text-white'
-                            }`}
-                    >
-                        Deposits
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('games')}
-                        className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === 'games'
-                                ? 'bg-pink-500 text-white'
-                                : 'text-slate-300 hover:text-white'
-                            }`}
-                    >
-                        Games
-                    </button>
+            <main className="p-6 space-y-5">
+                {/* Stats cards */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="wallet-card">
+                        <div className="text-slate-300 text-xs font-semibold">Total Games</div>
+                        <div className="value mt-1">{totalGames}</div>
+                    </div>
+                    <div className="wallet-card">
+                        <div className="text-slate-300 text-xs font-semibold">Games Won</div>
+                        <div className="value green mt-1">{gamesWon}</div>
+                    </div>
                 </div>
 
+                {/* Recent games */}
+                <h3 className="history-title">Recent Games</h3>
                 {loading ? (
                     <div className="flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-400"></div>
                     </div>
-                ) : filteredTransactions.length === 0 ? (
-                    <div className="bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl p-6 border border-pink-200 shadow-lg">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                                <span className="text-white text-2xl">📜</span>
-                            </div>
-                            <h3 className="text-pink-800 font-semibold text-lg mb-2">No Transactions Yet</h3>
-                            <p className="text-pink-700">Your transaction history will appear here.</p>
-                        </div>
+                ) : gameEntries.length === 0 ? (
+                    <div className="rounded-2xl p-8 border border-white/10 bg-slate-900/40 text-center">
+                        <div className="text-slate-400">No games yet</div>
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {filteredTransactions.map((transaction) => (
-                            <div key={transaction.id} className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/50">
+                        {gameEntries.map((g) => (
+                            <div key={g.gameId + String(g.date)} className="history-item">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-slate-700/60 rounded-full flex items-center justify-center">
-                                            <span className="text-white text-lg">{getTransactionIcon(transaction.type)}</span>
-                                        </div>
+                                        <div className="icon">🎮</div>
                                         <div>
-                                            <div className="text-white font-medium">{transaction.description}</div>
-                                            <div className="text-slate-400 text-sm">
-                                                {new Date(transaction.createdAt).toLocaleDateString()} at {new Date(transaction.createdAt).toLocaleTimeString()}
-                                            </div>
+                                            <div className="text-white font-semibold">Game {String(g.gameId).toString().slice(0, 10)}</div>
+                                            <div className="text-slate-400 text-xs mt-0.5">{g.date ? new Date(g.date).toLocaleString() : ''}</div>
                                         </div>
                                     </div>
-                                    <div className={`font-bold ${getTransactionColor(transaction.type)}`}>
-                                        {transaction.amount > 0 ? '+' : ''}ETB {Math.abs(transaction.amount)}
+                                    <div>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${g.prize > 0 ? 'bg-emerald-600/90 text-white' : 'bg-rose-600/90 text-white'}`}>{g.prize > 0 ? 'Won' : 'Lost'}</span>
                                     </div>
+                                </div>
+                                <div className="flex items-center gap-5 text-slate-300 text-sm mt-3">
+                                    <div>Stake: <span className="text-white font-semibold">{g.stake}</span></div>
+                                    <div>Prize: <span className="text-white font-semibold">{g.prize}</span></div>
+                                    <div>Winners: <span className="text-white font-semibold">{g.winners ?? '-'}</span></div>
                                 </div>
                             </div>
                         ))}

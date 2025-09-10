@@ -148,261 +148,262 @@ export default function GameLayout({
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
-            {/* Top Information Bar - 5 clickable buttons */}
-            <div className="flex justify-between p-2 bg-purple-800/30">
-                <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
-                    <div className="text-xs text-purple-200">Game ID</div>
-                    <div className="text-white font-semibold text-sm">{gameIdRef.current}</div>
-                </button>
-                <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
-                    <div className="text-xs text-purple-200">Players</div>
-                    <div className="text-white font-semibold text-sm">{playersCount}</div>
-                </button>
-                <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
-                    <div className="text-xs text-purple-200">Bet</div>
-                    <div className="text-white font-semibold text-sm">{stake}</div>
-                </button>
-                <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
-                    <div className="text-xs text-purple-200">Derash</div>
-                    <div className="text-white font-semibold text-sm">{derashAmount}</div>
-                </button>
-                <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
-                    <div className="text-xs text-purple-200">Called</div>
-                    <div className="text-white font-semibold text-sm">{called.length}</div>
-                </button>
-            </div>
-
-            {/* Main Content Area - 2 Column Layout (Left grid, Right stacked) */}
-            <div className="grid grid-cols-2 p-2 gap-2">
-                {/* Left Card - Complete BINGO Grid */}
-                <div className="bg-purple-800 border-2 border-red-500 rounded-xl p-2">
-                    <div className="grid grid-cols-5 gap-0">
-                        {/* B Column */}
-                        <div className="space-y-0.5">
-                            <div className="text-center text-white font-bold text-[11px] bg-blue-500 rounded-md py-1">B</div>
-                            {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
-                                <button
-                                    key={n}
-                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 border-white/20 text-white'}`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
-                        {/* I Column */}
-                        <div className="space-y-0.5">
-                            <div className="text-center text-white font-bold text-[11px] bg-purple-500 rounded-md py-1">I</div>
-                            {Array.from({ length: 15 }, (_, i) => i + 16).map(n => (
-                                <button
-                                    key={n}
-                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 border-white/20 text-white'}`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
-                        {/* N Column */}
-                        <div className="space-y-0.5">
-                            <div className="text-center text-white font-bold text-[11px] bg-green-500 rounded-md py-1">N</div>
-                            {Array.from({ length: 15 }, (_, i) => i + 31).map(n => (
-                                <button
-                                    key={n}
-                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 border-white/20 text-white'}`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
-                        {/* G Column */}
-                        <div className="space-y-0.5">
-                            <div className="text-center text-white font-bold text-[11px] bg-pink-500 rounded-md py-1">G</div>
-                            {Array.from({ length: 15 }, (_, i) => i + 46).map(n => (
-                                <button
-                                    key={n}
-                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 border-white/20 text-white'}`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
-                        {/* O Column */}
-                        <div className="space-y-0.5">
-                            <div className="text-center text-white font-bold text-[11px] bg-orange-500 rounded-md py-1">O</div>
-                            {Array.from({ length: 15 }, (_, i) => i + 61).map(n => (
-                                <button
-                                    key={n}
-                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 border-white/20 text-white'}`}
-                                >
-                                    {n}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+            <div className="max-w-md mx-auto px-3 py-3">
+                {/* Top Information Bar - 5 clickable buttons */}
+                <div className="flex justify-between p-2 bg-purple-800/40 rounded-xl ring-1 ring-white/10 shadow-lg shadow-black/20">
+                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                        <div className="text-xs text-purple-200">Game ID</div>
+                        <div className="text-white font-semibold text-sm">{gameIdRef.current}</div>
+                    </button>
+                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                        <div className="text-xs text-purple-200">Players</div>
+                        <div className="text-white font-semibold text-sm">{playersCount}</div>
+                    </button>
+                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                        <div className="text-xs text-purple-200">Bet</div>
+                        <div className="text-white font-semibold text-sm">{stake}</div>
+                    </button>
+                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                        <div className="text-xs text-purple-200">Derash</div>
+                        <div className="text-white font-semibold text-sm">{derashAmount}</div>
+                    </button>
+                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                        <div className="text-xs text-purple-200">Called</div>
+                        <div className="text-white font-semibold text-sm">{called.length}</div>
+                    </button>
                 </div>
 
-                {/* Right Side - Two Cards Stacked */}
-                <div className="space-y-2">
-                    {/* Right Top Card - Game Status */}
-                    <div className="bg-purple-800/30 rounded-xl p-2">
-                        {/* Game Status Header */}
-                        <div className="flex items-center justify-between mb-2">
-                            {showReadyMessage ? (
-                                <div className="flex items-center gap-2 w-full mr-2">
-                                    <div className="flex gap-2">
-                                        <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
-                                        <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
-                                        <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
-                                    </div>
-                                    <div className="flex-1 h-3 bg-white/10 rounded-full border border-white/15 overflow-hidden">
-                                        <div className="h-full w-2/3 bg-gradient-to-r from-pink-500 to-purple-500"></div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 border border-white/15">
-                                    {recentCalledNumbers.map((num, idx) => {
-                                        const letter = getLetterForNumber(num);
-                                        return (
-                                            <div key={`${num}-${idx}`} className={`text-white text-[11px] font-bold px-2 py-1 rounded-full ${chipBgForLetter(letter)} shadow-sm`}>{`${letter}-${num}`}</div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                            <button className="text-white text-sm">🔊</button>
-                        </div>
-
-                        {/* Game Message or Called Numbers */}
-                        {showReadyMessage ? (
-                            <div className="text-white font-semibold mb-3 text-center text-sm">Get ready for the next number!</div>
-                        ) : null}
-
-                        <div className="text-center mb-3">
-                            <div className="mx-auto w-full rounded-md border border-white/10 bg-gradient-to-b from-black/25 to-black/10 p-3 min-h-[120px] flex items-center justify-center">
-                                {currentCalledNumber ? (
-                                    <div className="w-24 h-24 rounded-full bg-white ring-4 ring-yellow-400 flex items-center justify-center shadow">
-                                        <div className="text-purple-700 font-extrabold">{`${getLetterForNumber(currentCalledNumber)}-${currentCalledNumber}`}</div>
-                                    </div>
-                                ) : (
-                                    <div className="w-20 h-20 rounded-full bg-white/70 ring-2 ring-white/40 flex items-center justify-center text-purple-700/60 font-bold">0-75</div>
-                                )}
+                {/* Main Content Area - 2 Column Layout (Left grid, Right stacked) */}
+                <div className="grid grid-cols-2 p-2 gap-3">
+                    {/* Left Card - Complete BINGO Grid */}
+                    <div className="rounded-xl p-3 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20">
+                        <div className="grid grid-cols-5 gap-1">
+                            {/* B Column */}
+                            <div className="space-y-0.5">
+                                <div className="text-center text-white font-bold text-[11px] bg-blue-600 rounded-md py-1 shadow">B</div>
+                                {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
+                                    <button
+                                        key={n}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* I Column */}
+                            <div className="space-y-0.5">
+                                <div className="text-center text-white font-bold text-[11px] bg-purple-600 rounded-md py-1 shadow">I</div>
+                                {Array.from({ length: 15 }, (_, i) => i + 16).map(n => (
+                                    <button
+                                        key={n}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* N Column */}
+                            <div className="space-y-0.5">
+                                <div className="text-center text-white font-bold text-[11px] bg-green-600 rounded-md py-1 shadow">N</div>
+                                {Array.from({ length: 15 }, (_, i) => i + 31).map(n => (
+                                    <button
+                                        key={n}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* G Column */}
+                            <div className="space-y-0.5">
+                                <div className="text-center text-white font-bold text-[11px] bg-pink-600 rounded-md py-1 shadow">G</div>
+                                {Array.from({ length: 15 }, (_, i) => i + 46).map(n => (
+                                    <button
+                                        key={n}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* O Column */}
+                            <div className="space-y-0.5">
+                                <div className="text-center text-white font-bold text-[11px] bg-orange-600 rounded-md py-1 shadow">O</div>
+                                {Array.from({ length: 15 }, (_, i) => i + 61).map(n => (
+                                    <button
+                                        key={n}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                    >
+                                        {n}
+                                    </button>
+                                ))}
                             </div>
                         </div>
-
-                        {/* Progress Bar */}
-                        {showReadyMessage && (
-                            <div className="w-full bg-white/10 rounded-full h-1 mb-1">
-                                <div className="bg-gradient-to-r from-pink-500 to-purple-500 h-1 rounded-full" style={{ width: '65%' }}></div>
-                            </div>
-                        )}
                     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    {/* Right Bottom Card - User's Cartella or Watching Only */}
-                    <div className="bg-purple-800/30 rounded-xl p-2">
-                        {shouldWatchOnly ? (
-                            /* Watching Only Mode */
-                            <div className="bg-blue-900 border-2 border-red-500 rounded-lg p-4 text-center">
-                                <div className="text-white font-bold text-lg mb-3">Watching Only</div>
-                                <div className="text-white/80 text-sm mb-4">
-                                    {hasInsufficientFunds ? (
-                                        <>
-                                            <div className="mb-2">You don't have enough balance to play.</div>
-                                            <div>Please deposit to your wallet first.</div>
-                                        </>
-                                    ) : gamePhase === 'finished' ? (
-                                        <>
-                                            <div className="mb-2">This game has finished.</div>
-                                            <div>Please wait for the next round to begin.</div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="mb-2">This round of the game has started.</div>
-                                            <div>Please wait here until a new round begins.</div>
-                                        </>
-                                    )}
-                                </div>
-                                {/* Wallet button removed as requested */}
-                            </div>
-                        ) : (
-                            /* Normal Cartella Mode */
-                            <>
-                                {/* User's Cartella - 5x5 Grid */}
-                                <div className="bg-blue-900 border-2 border-red-500 rounded-lg p-2">
-                                    {/* BINGO Header */}
-                                    <div className="grid grid-cols-5 gap-0 mb-1">
-                                        <div className="text-center text-white font-bold text-[11px] bg-blue-500 rounded-md py-1">B</div>
-                                        <div className="text-center text-white font-bold text-[11px] bg-purple-500 rounded-md py-1">I</div>
-                                        <div className="text-center text-white font-bold text-[11px] bg-green-500 rounded-md py-1">N</div>
-                                        <div className="text-center text-white font-bold text-[11px] bg-pink-500 rounded-md py-1">G</div>
-                                        <div className="text-center text-white font-bold text-[11px] bg-orange-500 rounded-md py-1">O</div>
+                    {/* Right Side - Two Cards Stacked */}
+                    <div className="space-y-3">
+                        {/* Right Top Card - Game Status */}
+                        <div className="rounded-xl p-3 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20">
+                            {/* Game Status Header */}
+                            <div className="flex items-center justify-between mb-2">
+                                {showReadyMessage ? (
+                                    <div className="flex items-center gap-2 w-full mr-2">
+                                        <div className="flex gap-2">
+                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
+                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
+                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
+                                        </div>
+                                        <div className="flex-1 h-3 bg-white/10 rounded-full border border-white/15 overflow-hidden">
+                                            <div className="h-full w-2/3 bg-gradient-to-r from-pink-500 to-purple-500"></div>
+                                        </div>
                                     </div>
-
-                                    {/* Numbers Grid */}
-                                    <div className="grid grid-cols-5 gap-0.5">
-                                        {Array.from({ length: 25 }, (_, i) => {
-                                            const row = Math.floor(i / 5);
-                                            const col = i % 5;
-                                            const isCenter = row === 2 && col === 2;
-                                            const isWinningCell = Array.isArray(winningPatternIndices) && winningPatternIndices.includes(i);
-
-                                            if (isCenter) {
-                                                return (
-                                                    <div key={i} className={`bg-green-500 rounded-md text-center py-1 flex items-center justify-center ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}>
-                                                        <span className="text-yellow-300 text-sm">★</span>
-                                                    </div>
-                                                );
-                                            }
-
-                                            // Use selected cartella data if available
-                                            let displayNumbers = [
-                                                [3, 17, 43, 54, 63],
-                                                [15, 20, 32, 58, 61],
-                                                [5, 18, 0, 50, 72],
-                                                [7, 25, 34, 46, 67],
-                                                [2, 23, 45, 59, 64]
-                                            ];
-
-                                            if (selectedCartela && BingoCards?.cards?.[selectedCartela - 1]) {
-                                                displayNumbers = BingoCards.cards[selectedCartela - 1];
-                                            }
-
-                                            const number = displayNumbers[row]?.[col] || 0;
-                                            const isCalled = called.includes(number);
-
+                                ) : (
+                                    <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 border border-white/15">
+                                        {recentCalledNumbers.map((num, idx) => {
+                                            const letter = getLetterForNumber(num);
                                             return (
-                                                <button
-                                                    key={i}
-                                                    className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isCalled ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
-                                                >
-                                                    {number}
-                                                </button>
+                                                <div key={`${num}-${idx}`} className={`text-white text-[11px] font-bold px-2 py-1 rounded-full ${chipBgForLetter(letter)} shadow-sm`}>{`${letter}-${num}`}</div>
                                             );
                                         })}
                                     </div>
-                                </div>
+                                )}
+                                <button className="text-white text-sm">🔊</button>
+                            </div>
 
-                                {/* Cartela Number Display */}
-                                <div className="text-center mt-2">
-                                    <div className="bg-amber-800 text-white text-sm font-bold px-4 py-1 rounded-full inline-block">
-                                        Cartela No : {selectedCartela || 47}
-                                    </div>
+                            {/* Game Message or Called Numbers */}
+                            {showReadyMessage ? (
+                                <div className="text-white font-semibold mb-3 text-center text-sm">Get ready for the next number!</div>
+                            ) : null}
+
+                            <div className="text-center mb-3">
+                                <div className="mx-auto w-full rounded-md border border-white/10 bg-gradient-to-b from-black/25 to-black/10 p-3 min-h-[120px] flex items-center justify-center">
+                                    {currentCalledNumber ? (
+                                        <div className="w-24 h-24 rounded-full bg-white ring-4 ring-yellow-400 flex items-center justify-center shadow">
+                                            <div className="text-purple-700 font-extrabold">{`${getLetterForNumber(currentCalledNumber)}-${currentCalledNumber}`}</div>
+                                        </div>
+                                    ) : (
+                                        <div className="w-20 h-20 rounded-full bg-white/70 ring-2 ring-white/40 flex items-center justify-center text-purple-700/60 font-bold">0-75</div>
+                                    )}
                                 </div>
-                            </>
-                        )}
+                            </div>
+
+                            {/* Progress Bar */}
+                            {showReadyMessage && (
+                                <div className="w-full bg-white/15 rounded-full h-1 mb-1">
+                                    <div className="bg-gradient-to-r from-pink-500 to-purple-500 h-1 rounded-full" style={{ width: '65%' }}></div>
+                                </div>
+                            )}
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        {/* Right Bottom Card - User's Cartella or Watching Only */}
+                        <div className="rounded-xl p-2 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20">
+                            {shouldWatchOnly ? (
+                                /* Watching Only Mode */
+                                <div className="rounded-lg p-4 text-center bg-transparent">
+                                    <div className="text-white font-bold text-lg mb-3">Watching Only</div>
+                                    <div className="text-white/80 text-sm mb-4">
+                                        {hasInsufficientFunds ? (
+                                            <>
+                                                <div className="mb-2">You don't have enough balance to play.</div>
+                                                <div>Please deposit to your wallet first.</div>
+                                            </>
+                                        ) : gamePhase === 'finished' ? (
+                                            <>
+                                                <div className="mb-2">This game has finished.</div>
+                                                <div>Please wait for the next round to begin.</div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className="mb-2">This round of the game has started.</div>
+                                                <div>Please wait here until a new round begins.</div>
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* Wallet button removed as requested */}
+                                </div>
+                            ) : (
+                                /* Normal Cartella Mode */
+                                <>
+                                    {/* User's Cartella - 5x5 Grid */}
+                                    <div className="rounded-lg p-2 bg-transparent">
+                                        {/* BINGO Header */}
+                                        <div className="grid grid-cols-5 gap-0 mb-1">
+                                            <div className="text-center text-white font-bold text-[11px] bg-blue-500 rounded-md py-1">B</div>
+                                            <div className="text-center text-white font-bold text-[11px] bg-purple-500 rounded-md py-1">I</div>
+                                            <div className="text-center text-white font-bold text-[11px] bg-green-500 rounded-md py-1">N</div>
+                                            <div className="text-center text-white font-bold text-[11px] bg-pink-500 rounded-md py-1">G</div>
+                                            <div className="text-center text-white font-bold text-[11px] bg-orange-500 rounded-md py-1">O</div>
+                                        </div>
+
+                                        {/* Numbers Grid */}
+                                        <div className="grid grid-cols-5 gap-0.5">
+                                            {Array.from({ length: 25 }, (_, i) => {
+                                                const row = Math.floor(i / 5);
+                                                const col = i % 5;
+                                                const isCenter = row === 2 && col === 2;
+                                                const isWinningCell = Array.isArray(winningPatternIndices) && winningPatternIndices.includes(i);
+
+                                                if (isCenter) {
+                                                    return (
+                                                        <div key={i} className={`bg-green-500 rounded-md text-center py-1 flex items-center justify-center ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}>
+                                                            <span className="text-yellow-300 text-sm">★</span>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                // Use selected cartella data if available
+                                                let displayNumbers = [
+                                                    [3, 17, 43, 54, 63],
+                                                    [15, 20, 32, 58, 61],
+                                                    [5, 18, 0, 50, 72],
+                                                    [7, 25, 34, 46, 67],
+                                                    [2, 23, 45, 59, 64]
+                                                ];
+
+                                                if (selectedCartela && BingoCards?.cards?.[selectedCartela - 1]) {
+                                                    displayNumbers = BingoCards.cards[selectedCartela - 1];
+                                                }
+
+                                                const number = displayNumbers[row]?.[col] || 0;
+                                                const isCalled = called.includes(number);
+
+                                                return (
+                                                    <button
+                                                        key={i}
+                                                        className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isCalled ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                                                    >
+                                                        {number}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Cartela Number Display */}
+                                    <div className="text-center mt-2">
+                                        <div className="bg-amber-700 text-white text-sm font-bold px-4 py-1 rounded-full inline-block shadow">
+                                            Cartela No : {selectedCartela || 47}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
 
@@ -418,30 +419,31 @@ export default function GameLayout({
 
 
 
-            {/* Bottom Action Buttons */}
-            <div className="flex justify-between p-2 mt-3 gap-2">
-                <button
-                    onClick={onLeave}
-                    className="bg-red-500 text-white px-3 py-2 rounded-lg font-semibold flex-1 text-sm hover:bg-red-600 transition-colors"
-                >
-                    Leave
-                </button>
-                <button
-                    onClick={onRefresh}
-                    className="bg-orange-500 text-white px-3 py-2 rounded-lg font-semibold flex-1 flex items-center justify-center gap-1 text-sm hover:bg-orange-600 transition-colors"
-                >
-                    <span>↻</span> Refresh
-                </button>
-                <button
-                    onClick={shouldWatchOnly ? undefined : handleBingoClaim}
-                    disabled={shouldWatchOnly}
-                    className={`px-3 py-2 rounded-lg font-bold flex-1 text-sm transition-all ${shouldWatchOnly
-                        ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                        : `bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 ${hasLocalBingo ? 'ring-4 ring-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.7)] animate-pulse' : ''}`
-                        }`}
-                >
-                    BINGO
-                </button>
+                {/* Bottom Action Buttons */}
+                <div className="flex justify-between p-2 mt-3 gap-2">
+                    <button
+                        onClick={onLeave}
+                        className="bg-red-600 text-white px-3 py-2 rounded-lg font-semibold flex-1 text-sm hover:bg-red-700 transition-colors shadow"
+                    >
+                        Leave
+                    </button>
+                    <button
+                        onClick={onRefresh}
+                        className="bg-amber-500 text-white px-3 py-2 rounded-lg font-semibold flex-1 flex items-center justify-center gap-1 text-sm hover:bg-amber-600 transition-colors shadow"
+                    >
+                        <span>↻</span> Refresh
+                    </button>
+                    <button
+                        onClick={shouldWatchOnly ? undefined : handleBingoClaim}
+                        disabled={shouldWatchOnly}
+                        className={`px-3 py-2 rounded-lg font-bold flex-1 text-sm transition-all ${shouldWatchOnly
+                            ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                            : `bg-gradient-to-r from-yellow-400 to-orange-500 text-white hover:from-yellow-500 hover:to-orange-600 shadow ${hasLocalBingo ? 'ring-4 ring-yellow-300 shadow-[0_0_20px_rgba(250,204,21,0.7)] animate-pulse' : ''}`
+                            }`}
+                    >
+                        BINGO
+                    </button>
+                </div>
             </div>
         </div>
     );
