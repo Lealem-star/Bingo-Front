@@ -77,8 +77,8 @@ export default function Wallet({ onNavigate }) {
                         <button
                             onClick={() => setActiveTab('balance')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'balance'
-                                    ? 'bg-slate-700/60 text-white'
-                                    : 'bg-transparent text-slate-300'
+                                ? 'bg-slate-700/60 text-white'
+                                : 'bg-transparent text-slate-300'
                                 }`}
                         >
                             Balance
@@ -86,8 +86,8 @@ export default function Wallet({ onNavigate }) {
                         <button
                             onClick={() => setActiveTab('history')}
                             className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === 'history'
-                                    ? 'bg-slate-700/60 text-white'
-                                    : 'bg-transparent text-slate-300'
+                                ? 'bg-slate-700/60 text-white'
+                                : 'bg-transparent text-slate-300'
                                 }`}
                         >
                             History
@@ -146,9 +146,9 @@ export default function Wallet({ onNavigate }) {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${transaction.type === 'deposit' ? 'bg-green-600' :
-                                                    transaction.type === 'game_win' ? 'bg-yellow-600' :
-                                                        transaction.type === 'game_bet' ? 'bg-red-600' :
-                                                            'bg-blue-600'
+                                                transaction.type === 'game_win' ? 'bg-yellow-600' :
+                                                    transaction.type === 'game_bet' ? 'bg-red-600' :
+                                                        'bg-blue-600'
                                                 }`}>
                                                 <span className="text-white text-sm">
                                                     {transaction.type === 'deposit' ? '💰' :
