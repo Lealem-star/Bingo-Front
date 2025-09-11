@@ -13,6 +13,21 @@ async function verifyTelegram(initData) {
     return res.json();
 }
 
+async function fetchProfileWithSession(sessionId) {
+    if (!sessionId) return null;
+    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    const res = await fetch(`${apiBase}/user/profile`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-session': sessionId,
+            'Authorization': `Bearer ${sessionId}`
+        }
+    });
+    if (!res.ok) return null;
+    return res.json();
+}
+
 export function AuthProvider({ children }) {
     const [sessionId, setSessionId] = useState(() => localStorage.getItem('sessionId'));
     const [user, setUser] = useState(() => {
@@ -23,22 +38,35 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         (async () => {
             if (sessionId && user) {
-                console.log('Already authenticated:', { sessionId, user });
+                // Try to hydrate missing fields (phone/isRegistered) in background
+                try {
+                    if (!user.phone || user.isRegistered === false) {
+                        const prof = await fetchProfileWithSession(sessionId);
+                        if (prof?.user) {
+                            const merged = { ...user, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                            setUser(merged);
+                            localStorage.setItem('user', JSON.stringify(merged));
+                        }
+                    }
+                } catch { }
                 return;
             }
-            console.log('Starting authentication...');
             const initData = window?.Telegram?.WebApp?.initData;
-            console.log('Telegram initData:', initData);
             try {
-                console.log('Trying Telegram authentication...');
                 const out = await verifyTelegram(initData);
-                console.log('Telegram auth successful:', out);
                 setSessionId(out.sessionId);
-                setUser(out.user);
                 localStorage.setItem('sessionId', out.sessionId);
-                localStorage.setItem('user', JSON.stringify(out.user));
+                // Hydrate profile to ensure phone/isRegistered available
+                let mergedUser = out.user;
+                try {
+                    const prof = await fetchProfileWithSession(out.sessionId);
+                    if (prof?.user) {
+                        mergedUser = { ...mergedUser, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                    }
+                } catch { }
+                setUser(mergedUser);
+                localStorage.setItem('user', JSON.stringify(mergedUser));
             } catch (e) {
-                console.log('Telegram auth failed, trying dev auth:', e);
                 // fallback dev session
                 const devUserId = '1001';
                 const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -48,13 +76,18 @@ export function AuthProvider({ children }) {
                 });
                 if (res.ok) {
                     const out = await res.json();
-                    console.log('Dev auth successful:', out);
                     setSessionId(out.sessionId);
-                    setUser(out.user);
                     localStorage.setItem('sessionId', out.sessionId);
-                    localStorage.setItem('user', JSON.stringify(out.user));
-                } else {
-                    console.error('Dev auth failed:', res.status, await res.text());
+                    // Hydrate profile
+                    let mergedUser = out.user;
+                    try {
+                        const prof = await fetchProfileWithSession(out.sessionId);
+                        if (prof?.user) {
+                            mergedUser = { ...mergedUser, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                        }
+                    } catch { }
+                    setUser(mergedUser);
+                    localStorage.setItem('user', JSON.stringify(mergedUser));
                 }
             }
         })();

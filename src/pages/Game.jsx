@@ -19,6 +19,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
     const [winners, setWinners] = useState([]);
     const [showWinners, setShowWinners] = useState(false);
     const [currentCalledNumber, setCurrentCalledNumber] = useState(null);
+    const [playersCount, setPlayersCount] = useState(0);
 
     // Update stake when selectedStake prop changes
     useEffect(() => {
@@ -45,6 +46,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     setGameId(evt.payload.gameId);
                     setAvailableCards(evt.payload.availableCards || []);
                     setEndsAt(evt.payload.endsAt);
+                    setPlayersCount(Number(evt.payload.playersCount || 0));
                     break;
                 case 'registration_update':
                     if (typeof evt.payload.timeLeft === 'number') {
@@ -67,6 +69,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     setGameId(evt.payload.gameId);
                     setMyCard(evt.payload.card);
                     setCalled(evt.payload.called || []);
+                    setPlayersCount(Number(evt.payload.playersCount || playersCount));
                     setEndsAt(null);
                     break;
                 case 'number_called': {
@@ -104,6 +107,10 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     setCalled(evt.payload.called || []);
                     setAvailableCards(evt.payload.availableCards || []);
                     setEndsAt(evt.payload.endsAt || evt.payload.nextStartAt || null);
+                    setPlayersCount(Number(evt.payload.playersCount || playersCount));
+                    break;
+                case 'players_update':
+                    setPlayersCount(Number(evt.payload.playersCount || 0));
                     break;
                 default:
                     break;
@@ -205,6 +212,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                 gameStatus={phase === 'running' ? 'playing' : 'ready'}
                 currentCalledNumber={currentCalledNumber}
                 onRefresh={() => window.location.reload()}
+                playersCount={playersCount}
             />
             <WinnerAnnounce open={showWinners} onClose={() => setShowWinners(false)} winners={winners} />
             <BottomNav current="game" onNavigate={onNavigate} />
