@@ -14,21 +14,30 @@ export default function Wallet({ onNavigate }) {
     const [displayRegistered, setDisplayRegistered] = useState(!!user?.isRegistered);
 
     useEffect(() => {
-        if (!sessionId) return;
+        if (!sessionId) {
+            console.log('No sessionId available for wallet fetch');
+            return;
+        }
         const fetchData = async () => {
             try {
+                console.log('Fetching wallet data with sessionId:', sessionId);
                 setLoading(true);
                 // Always hydrate latest profile to reflect DB phone/registration
                 try {
                     const profile = await apiFetch('/user/profile', { sessionId });
+                    console.log('Profile data for wallet:', profile);
                     setDisplayPhone(profile?.user?.phone || null);
                     setDisplayRegistered(!!profile?.user?.isRegistered);
-                } catch { }
+                } catch (e) {
+                    console.error('Profile fetch error:', e);
+                }
                 const walletData = await apiFetch('/wallet', { sessionId });
+                console.log('Wallet data received:', walletData);
                 setWallet(walletData);
 
                 if (activeTab === 'history') {
                     const transactionData = await apiFetch('/user/transactions', { sessionId });
+                    console.log('Transaction data received:', transactionData);
                     setTransactions(transactionData.transactions || []);
                 }
             } catch (error) {

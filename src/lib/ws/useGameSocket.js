@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 
-export function useGameSocket(url, { onEvent } = {}) {
+export function useGameSocket(url, { onEvent, token } = {}) {
     const wsRef = useRef(null);
     const [connected, setConnected] = useState(false);
     const [lastEvent, setLastEvent] = useState(null);
@@ -13,12 +13,14 @@ export function useGameSocket(url, { onEvent } = {}) {
     }, []);
 
     useEffect(() => {
-        if (!url) return;
+        if (!url || !token) return;
         let stopped = false;
         let retry = 0;
 
         const connect = () => {
-            const ws = new WebSocket(url);
+            const wsUrl = new URL(url);
+            wsUrl.searchParams.set('token', token);
+            const ws = new WebSocket(wsUrl.toString());
             wsRef.current = ws;
 
             ws.onopen = () => {
@@ -48,7 +50,7 @@ export function useGameSocket(url, { onEvent } = {}) {
             stopped = true;
             wsRef.current?.close();
         };
-    }, [url, onEvent]);
+    }, [url, token, onEvent]);
 
     return { connected, lastEvent, send };
 }

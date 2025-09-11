@@ -6,23 +6,34 @@ import { apiFetch } from '../lib/api/client';
 export default function History({ onNavigate }) {
     const { sessionId } = useAuth();
     const [transactions, setTransactions] = useState([]);
+    const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('all');
 
     useEffect(() => {
-        if (!sessionId) return;
-        const fetchTransactions = async () => {
+        if (!sessionId) {
+            console.log('No sessionId available for history fetch');
+            return;
+        }
+        const fetchData = async () => {
             try {
+                console.log('Fetching history data with sessionId:', sessionId);
                 setLoading(true);
-                const data = await apiFetch('/user/transactions', { sessionId });
-                setTransactions(data.transactions || []);
+                const [transactionsData, gamesData] = await Promise.all([
+                    apiFetch('/user/transactions', { sessionId }),
+                    apiFetch('/user/games', { sessionId })
+                ]);
+                console.log('Transactions data received:', transactionsData);
+                console.log('Games data received:', gamesData);
+                setTransactions(transactionsData.transactions || []);
+                setGames(gamesData.games || []);
             } catch (error) {
-                console.error('Failed to fetch transaction history:', error);
+                console.error('Failed to fetch history data:', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchTransactions();
+        fetchData();
     }, [sessionId]);
 
     const filteredTransactions = transactions.filter(transaction => {
@@ -32,34 +43,8 @@ export default function History({ onNavigate }) {
         return true;
     });
 
-    // Build game history entries grouped by gameId from transactions
-    const gameEntries = useMemo(() => {
-        const byGame = new Map();
-        for (const t of transactions) {
-            if (!['game_bet', 'game_win'].includes(t.type)) continue;
-            const id = t.gameId || t.description || 'Unknown';
-            if (!byGame.has(id)) byGame.set(id, { gameId: id, stake: 0, prize: 0, winners: null, date: new Date(t.createdAt) });
-            const entry = byGame.get(id);
-            // keep latest date for display
-            try { const d = new Date(t.createdAt); if (d > entry.date) entry.date = d; } catch { }
-            if (t.type === 'game_bet') {
-                entry.stake = Math.abs(Number(t.amount || 0));
-            }
-            if (t.type === 'game_win') {
-                entry.prize += Math.abs(Number(t.amount || 0));
-            }
-            // Try to parse winners from description like "Winners: 3"
-            if (!entry.winners && typeof t.description === 'string') {
-                const m = t.description.match(/winners?:\s*(\d+)/i);
-                if (m) entry.winners = Number(m[1]);
-            }
-        }
-        const list = Array.from(byGame.values()).sort((a, b) => b.date - a.date);
-        return list;
-    }, [transactions]);
-
-    const totalGames = gameEntries.length;
-    const gamesWon = gameEntries.filter(g => Number(g.prize) > 0).length;
+    const totalGames = games.length;
+    const gamesWon = games.filter(g => g.userResult?.won).length;
 
     const getTransactionIcon = (type) => {
         switch (type) {
@@ -106,30 +91,30 @@ export default function History({ onNavigate }) {
                     <div className="flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-400"></div>
                     </div>
-                ) : gameEntries.length === 0 ? (
+                ) : games.length === 0 ? (
                     <div className="rounded-2xl p-8 border border-white/10 bg-slate-900/40 text-center">
                         <div className="text-slate-400">No games yet</div>
                     </div>
                 ) : (
                     <div className="space-y-3">
-                        {gameEntries.map((g) => (
-                            <div key={g.gameId + String(g.date)} className="history-item">
+                        {games.map((g) => (
+                            <div key={g.id} className="history-item">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="icon">🎮</div>
                                         <div>
-                                            <div className="text-white font-semibold">Game {String(g.gameId).toString().slice(0, 10)}</div>
-                                            <div className="text-slate-400 text-xs mt-0.5">{g.date ? new Date(g.date).toLocaleString() : ''}</div>
+                                            <div className="text-white font-semibold">Game {g.gameId}</div>
+                                            <div className="text-slate-400 text-xs mt-0.5">{g.finishedAt ? new Date(g.finishedAt).toLocaleString() : ''}</div>
                                         </div>
                                     </div>
                                     <div>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${g.prize > 0 ? 'bg-emerald-600/90 text-white' : 'bg-rose-600/90 text-white'}`}>{g.prize > 0 ? 'Won' : 'Lost'}</span>
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${g.userResult?.won ? 'bg-emerald-600/90 text-white' : 'bg-rose-600/90 text-white'}`}>{g.userResult?.won ? 'Won' : 'Lost'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-5 text-slate-300 text-sm mt-3">
                                     <div>Stake: <span className="text-white font-semibold">{g.stake}</span></div>
-                                    <div>Prize: <span className="text-white font-semibold">{g.prize}</span></div>
-                                    <div>Winners: <span className="text-white font-semibold">{g.winners ?? '-'}</span></div>
+                                    <div>Prize: <span className="text-white font-semibold">{g.userResult?.prize || 0}</span></div>
+                                    <div>Status: <span className="text-white font-semibold">{g.status}</span></div>
                                 </div>
                             </div>
                         ))}

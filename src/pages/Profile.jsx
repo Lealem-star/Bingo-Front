@@ -23,6 +23,7 @@ export default function Profile({ onNavigate }) {
         }
     });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { user, sessionId } = useAuth();
 
     const displayName = profileData.user?.firstName || user?.firstName || 'User';
@@ -31,14 +32,19 @@ export default function Profile({ onNavigate }) {
     // Fetch profile data
     useEffect(() => {
         const fetchProfileData = async () => {
-            if (!sessionId) return;
+            if (!sessionId) {
+                console.log('No sessionId available for profile fetch');
+                return;
+            }
             try {
+                console.log('Fetching profile data with sessionId:', sessionId);
                 setLoading(true);
                 const data = await apiFetch('/user/profile', { sessionId });
+                console.log('Profile data received:', data);
                 setProfileData(data);
             } catch (error) {
                 console.error('Failed to fetch profile data:', error);
-                // Keep default values on error
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -62,6 +68,17 @@ export default function Profile({ onNavigate }) {
                 {loading ? (
                     <div className="flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-400"></div>
+                    </div>
+                ) : error ? (
+                    <div className="text-center py-12">
+                        <div className="text-red-400 text-lg mb-2">❌ Error Loading Data</div>
+                        <div className="text-slate-300 mb-4">{error}</div>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-4 py-2 bg-blue-600 text-white rounded"
+                        >
+                            Retry
+                        </button>
                     </div>
                 ) : (
                     <>
@@ -101,6 +118,22 @@ export default function Profile({ onNavigate }) {
                                     <span>Games Won</span>
                                 </div>
                                 <div className="value">{profileData.wallet.gamesWon}</div>
+                            </div>
+                        </div>
+
+                        {/* Debug Info - Remove in production */}
+                        <div className="space-y-3">
+                            <h2 className="text-white text-base font-semibold">Debug Info</h2>
+                            <div className="bg-slate-800/50 p-3 rounded-lg text-xs text-slate-300">
+                                <div>Session ID: {sessionId ? 'Present' : 'Missing'}</div>
+                                <div>User: {user ? JSON.stringify(user) : 'None'}</div>
+                                <div>Profile Data: {JSON.stringify(profileData)}</div>
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-xs"
+                                >
+                                    Refresh Data
+                                </button>
                             </div>
                         </div>
 

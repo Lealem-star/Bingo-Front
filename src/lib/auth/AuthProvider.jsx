@@ -22,15 +22,23 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         (async () => {
-            if (sessionId && user) return;
+            if (sessionId && user) {
+                console.log('Already authenticated:', { sessionId, user });
+                return;
+            }
+            console.log('Starting authentication...');
             const initData = window?.Telegram?.WebApp?.initData;
+            console.log('Telegram initData:', initData);
             try {
+                console.log('Trying Telegram authentication...');
                 const out = await verifyTelegram(initData);
+                console.log('Telegram auth successful:', out);
                 setSessionId(out.sessionId);
                 setUser(out.user);
                 localStorage.setItem('sessionId', out.sessionId);
                 localStorage.setItem('user', JSON.stringify(out.user));
-            } catch {
+            } catch (e) {
+                console.log('Telegram auth failed, trying dev auth:', e);
                 // fallback dev session
                 const devUserId = '1001';
                 const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -40,10 +48,13 @@ export function AuthProvider({ children }) {
                 });
                 if (res.ok) {
                     const out = await res.json();
+                    console.log('Dev auth successful:', out);
                     setSessionId(out.sessionId);
                     setUser(out.user);
                     localStorage.setItem('sessionId', out.sessionId);
                     localStorage.setItem('user', JSON.stringify(out.user));
+                } else {
+                    console.error('Dev auth failed:', res.status, await res.text());
                 }
             }
         })();

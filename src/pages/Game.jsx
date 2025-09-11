@@ -4,9 +4,11 @@ import GameLayout from '../components/GameLayout';
 import WinnerAnnounce from '../components/WinnerAnnounce';
 import { useGameSocket } from '../lib/ws/useGameSocket';
 import { playNumberSound } from '../lib/audio/numberSounds';
+import { useAuth } from '../lib/auth/AuthProvider';
 import lbLogo from '../assets/lb.png';
 
 export default function Game({ onNavigate, onStakeSelected, selectedCartela, selectedStake }) {
+    const { sessionId } = useAuth();
     const [stake, setStake] = useState(selectedStake);
     const [phase, setPhase] = useState('lobby');
     const [gameId, setGameId] = useState(null);
@@ -31,6 +33,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
     }, [stake]);
 
     const { connected, send } = useGameSocket(wsUrl, {
+        token: sessionId,
         onEvent: (evt) => {
             switch (evt.type) {
                 case 'lobby_info':
