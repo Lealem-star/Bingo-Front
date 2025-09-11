@@ -1,26 +1,45 @@
 async function reauthenticateAndGetSession() {
     try {
+        console.log('Re-authenticating due to 401...');
         const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
         const initData = window?.Telegram?.WebApp?.initData;
-        let res = await fetch(`${apiBase}/auth/telegram/verify`, {
+
+        // Try Telegram auth first
+        if (initData) {
+            console.log('Attempting Telegram auth...');
+            const res = await fetch(`${apiBase}/auth/telegram/verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ initData })
+            });
+            if (res.ok) {
+                const out = await res.json();
+                console.log('Telegram auth successful:', out);
+                localStorage.setItem('sessionId', out.sessionId);
+                localStorage.setItem('user', JSON.stringify(out.user));
+                return out.sessionId;
+            }
+        }
+
+        // Dev fallback
+        console.log('Attempting dev fallback auth...');
+        const res = await fetch(`${apiBase}/auth/telegram/verify`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ initData })
+            body: JSON.stringify({ devUserId: '1001' })
         });
-        if (!res.ok) {
-            // Dev fallback
-            res = await fetch(`${apiBase}/auth/telegram/verify`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ devUserId: '1001' })
-            });
-        }
         if (res.ok) {
             const out = await res.json();
+            console.log('Dev auth successful:', out);
             localStorage.setItem('sessionId', out.sessionId);
             localStorage.setItem('user', JSON.stringify(out.user));
             return out.sessionId;
+        } else {
+            console.error('Dev auth failed:', res.status, await res.text());
         }
-    } catch (e) { }
+    } catch (e) {
+        console.error('Re-authentication error:', e);
+    }
     return null;
 }
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { apiFetch } from '../api/client';
 
 const AuthContext = createContext({ sessionId: null, user: null, setSessionId: () => { } });
 
@@ -15,17 +16,11 @@ async function verifyTelegram(initData) {
 
 async function fetchProfileWithSession(sessionId) {
     if (!sessionId) return null;
-    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-    const res = await fetch(`${apiBase}/user/profile`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-session': sessionId,
-            'Authorization': `Bearer ${sessionId}`
-        }
-    });
-    if (!res.ok) return null;
-    return res.json();
+    try {
+        return await apiFetch('/user/profile', { sessionId });
+    } catch {
+        return null;
+    }
 }
 
 export function AuthProvider({ children }) {

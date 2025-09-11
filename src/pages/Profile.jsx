@@ -32,13 +32,16 @@ export default function Profile({ onNavigate }) {
     // Fetch profile data
     useEffect(() => {
         const fetchProfileData = async () => {
+            console.log('Profile useEffect triggered, sessionId:', sessionId, 'user:', user);
             if (!sessionId) {
                 console.log('No sessionId available for profile fetch');
+                setLoading(false);
                 return;
             }
             try {
                 console.log('Fetching profile data with sessionId:', sessionId);
                 setLoading(true);
+                setError(null);
                 const data = await apiFetch('/user/profile', { sessionId });
                 console.log('Profile data received:', data);
                 setProfileData(data);
@@ -51,7 +54,7 @@ export default function Profile({ onNavigate }) {
         };
 
         fetchProfileData();
-    }, [sessionId]);
+    }, [sessionId, user]);
 
     return (
         <div className="min-h-screen overflow-y-auto pb-28 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
@@ -128,12 +131,31 @@ export default function Profile({ onNavigate }) {
                                 <div>Session ID: {sessionId ? 'Present' : 'Missing'}</div>
                                 <div>User: {user ? JSON.stringify(user) : 'None'}</div>
                                 <div>Profile Data: {JSON.stringify(profileData)}</div>
-                                <button
-                                    onClick={() => window.location.reload()}
-                                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-xs"
-                                >
-                                    Refresh Data
-                                </button>
+                                <div>API URL: {import.meta.env.VITE_API_URL || 'http://localhost:3001'}</div>
+                                <div className="mt-2 space-x-2">
+                                    <button
+                                        onClick={() => window.location.reload()}
+                                        className="px-3 py-1 bg-blue-600 text-white rounded text-xs"
+                                    >
+                                        Refresh Data
+                                    </button>
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/debug`);
+                                                const data = await res.json();
+                                                console.log('Debug endpoint response:', data);
+                                                alert('Check console for debug info');
+                                            } catch (e) {
+                                                console.error('Debug test failed:', e);
+                                                alert('Debug test failed - check console');
+                                            }
+                                        }}
+                                        className="px-3 py-1 bg-green-600 text-white rounded text-xs"
+                                    >
+                                        Test API
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
