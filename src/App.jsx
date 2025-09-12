@@ -38,8 +38,7 @@ function App() {
         return <Rules onNavigate={setCurrentPage} />;
       case 'scores':
         return <Scores onNavigate={setCurrentPage} />;
-      case 'history':
-        return <History onNavigate={setCurrentPage} />;
+      // history removed
       case 'wallet':
         return <Wallet onNavigate={setCurrentPage} />;
       case 'profile':

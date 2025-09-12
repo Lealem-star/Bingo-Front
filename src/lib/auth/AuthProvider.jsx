@@ -46,7 +46,8 @@ export function AuthProvider({ children }) {
                 } catch { }
                 return;
             }
-            const initData = window?.Telegram?.WebApp?.initData;
+            // Support both SDK initData and URL param fallback (tgWebAppData)
+            const initData = window?.Telegram?.WebApp?.initData || new URLSearchParams(window.location.search).get('tgWebAppData');
             try {
                 const out = await verifyTelegram(initData);
                 setSessionId(out.sessionId);
