@@ -45,10 +45,30 @@ export function AuthProvider({ children }) {
                         }
                     }
                 } catch { }
+                setIsLoading(false);
                 return;
             }
             // Support both SDK initData and URL param fallback (tgWebAppData)
             const initData = window?.Telegram?.WebApp?.initData || new URLSearchParams(window.location.search).get('tgWebAppData');
+
+            console.log('Telegram WebApp check:', {
+                hasTelegram: !!window?.Telegram,
+                hasWebApp: !!window?.Telegram?.WebApp,
+                initData: initData ? 'present' : 'missing',
+                initDataLength: initData?.length || 0,
+                urlParams: window.location.search
+            });
+
+            if (!initData) {
+                console.error('No Telegram initData available');
+                setSessionId(null);
+                setUser(null);
+                localStorage.removeItem('sessionId');
+                localStorage.removeItem('user');
+                setIsLoading(false);
+                return;
+            }
+
             try {
                 const out = await verifyTelegram(initData);
                 setSessionId(out.sessionId);
