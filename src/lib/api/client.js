@@ -21,22 +21,8 @@ async function reauthenticateAndGetSession() {
             }
         }
 
-        // Dev fallback
-        console.log('Attempting dev fallback auth...');
-        const res = await fetch(`${apiBase}/auth/telegram/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ devUserId: '1001' })
-        });
-        if (res.ok) {
-            const out = await res.json();
-            console.log('Dev auth successful:', out);
-            localStorage.setItem('sessionId', out.sessionId);
-            localStorage.setItem('user', JSON.stringify(out.user));
-            return out.sessionId;
-        } else {
-            console.error('Dev auth failed:', res.status, await res.text());
-        }
+        // No fallback for production - require valid Telegram data
+        console.error('Telegram authentication failed - no valid initData available');
     } catch (e) {
         console.error('Re-authentication error:', e);
     }
