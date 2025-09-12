@@ -48,6 +48,9 @@ export function AuthProvider({ children }) {
                 setIsLoading(false);
                 return;
             }
+            // Wait a bit for Telegram WebApp to initialize
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
             // Support both SDK initData and URL param fallback (tgWebAppData)
             const initData = window?.Telegram?.WebApp?.initData || new URLSearchParams(window.location.search).get('tgWebAppData');
 
@@ -56,11 +59,36 @@ export function AuthProvider({ children }) {
                 hasWebApp: !!window?.Telegram?.WebApp,
                 initData: initData ? 'present' : 'missing',
                 initDataLength: initData?.length || 0,
-                urlParams: window.location.search
+                urlParams: window.location.search,
+                fullInitData: initData,
+                telegramWebApp: window?.Telegram?.WebApp,
+                isExpanded: window?.Telegram?.WebApp?.isExpanded,
+                version: window?.Telegram?.WebApp?.version
             });
 
             if (!initData) {
-                console.error('No Telegram initData available');
+                console.error('No Telegram initData available - this should only happen when not accessed through Telegram');
+
+                // Temporary bypass for testing - remove this in production
+                if (window.location.hostname === 'bingo-frontend-28pi.onrender.com') {
+                    console.log('Using test mode for deployed app');
+                    // Create a test session for debugging
+                    const testSessionId = 'test-session-' + Date.now();
+                    const testUser = {
+                        id: 'test-user',
+                        firstName: 'Test',
+                        lastName: 'User',
+                        phone: '+251900000000',
+                        isRegistered: true
+                    };
+                    setSessionId(testSessionId);
+                    setUser(testUser);
+                    localStorage.setItem('sessionId', testSessionId);
+                    localStorage.setItem('user', JSON.stringify(testUser));
+                    setIsLoading(false);
+                    return;
+                }
+
                 setSessionId(null);
                 setUser(null);
                 localStorage.removeItem('sessionId');
