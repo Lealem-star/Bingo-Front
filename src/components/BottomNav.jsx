@@ -3,7 +3,6 @@ import React from 'react';
 const tabs = [
     { key: 'game', label: 'Game', icon: '🎮' },
     { key: 'scores', label: 'Scores', icon: '🏆' },
-    { key: 'history', label: 'History', icon: '🔁' },
     { key: 'wallet', label: 'Wallet', icon: '🧾' },
     { key: 'profile', label: 'Profile', icon: '👤' },
 ];
@@ -12,7 +11,7 @@ export default function BottomNav({ current, onNavigate }) {
     return (
         <div className="nav-wrap">
             <nav className="mx-auto max-w-md w-full">
-                <ul className="bottom-nav grid grid-cols-5 gap-5 list-none text-[12px] text-pink-200 px-3 py-2 rounded-2xl">
+                <ul className="bottom-nav grid grid-cols-4 gap-5 list-none text-[12px] text-pink-200 px-3 py-2 rounded-2xl">
                     {tabs.map(t => (
                         <li key={t.key}>
                             <button
