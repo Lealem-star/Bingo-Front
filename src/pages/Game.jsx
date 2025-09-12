@@ -6,6 +6,7 @@ import { useGameSocket } from '../lib/ws/useGameSocket';
 import { playNumberSound } from '../lib/audio/numberSounds';
 import { useAuth } from '../lib/auth/AuthProvider';
 import lbLogo from '../assets/lb.png';
+import { apiFetch } from '../lib/api/client';
 
 export default function Game({ onNavigate, onStakeSelected, selectedCartela, selectedStake }) {
     const { sessionId } = useAuth();
@@ -20,6 +21,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
     const [showWinners, setShowWinners] = useState(false);
     const [currentCalledNumber, setCurrentCalledNumber] = useState(null);
     const [playersCount, setPlayersCount] = useState(0);
+    const [profile, setProfile] = useState(null);
 
     // Update stake when selectedStake prop changes
     useEffect(() => {
@@ -135,6 +137,19 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
         send('bingo_claim', { gameId, cardNumber: myCard.id });
     };
 
+    // Fetch identity profile for lobby header display
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            if (!sessionId) return;
+            try {
+                const data = await apiFetch('/user/profile', { sessionId });
+                if (!cancelled) setProfile(data);
+            } catch (_) { }
+        })();
+        return () => { cancelled = true; };
+    }, [sessionId]);
+
     // Leave: return to origin (stake selection) and clear session state
     const handleLeave = () => {
         if (gameId) {
@@ -171,6 +186,19 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     <h1 className="text-center text-3xl md:text-4xl font-extrabold leading-tight mt-6 text-white">
                         Welcome to Love Bingo
                     </h1>
+                    {/* Identity summary */}
+                    <div className="mt-3">
+                        <div className="flex items-center justify-between text-white/90 text-sm">
+                            <div>
+                                <span>👤 </span>
+                                <span>{profile?.user?.firstName || 'Player'}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <span title="Main Wallet">💰 {profile?.wallet?.main ?? 0}</span>
+                                <span title="Play Wallet">🎮 {profile?.wallet?.play ?? 0}</span>
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
                 <main className="p-4 space-y-4">
