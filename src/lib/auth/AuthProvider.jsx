@@ -63,7 +63,9 @@ export function AuthProvider({ children }) {
                 fullInitData: initData,
                 telegramWebApp: window?.Telegram?.WebApp,
                 isExpanded: window?.Telegram?.WebApp?.isExpanded,
-                version: window?.Telegram?.WebApp?.version
+                version: window?.Telegram?.WebApp?.version,
+                userAgent: navigator.userAgent,
+                isTelegramWebApp: window?.Telegram?.WebApp?.platform === 'web'
             });
 
             if (!initData) {
