@@ -10,8 +10,9 @@ export default function Wallet({ onNavigate }) {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('balance');
     const [transactions, setTransactions] = useState([]);
-    const [displayPhone, setDisplayPhone] = useState(user?.phone || null);
-    const [displayRegistered, setDisplayRegistered] = useState(!!user?.isRegistered);
+    const [profileData, setProfileData] = useState(null);
+    const [displayPhone, setDisplayPhone] = useState(null);
+    const [displayRegistered, setDisplayRegistered] = useState(false);
 
     useEffect(() => {
         if (!sessionId) {
@@ -26,6 +27,7 @@ export default function Wallet({ onNavigate }) {
                 try {
                     const profile = await apiFetch('/user/profile', { sessionId });
                     console.log('Profile data for wallet:', profile);
+                    setProfileData(profile);
                     setDisplayPhone(profile?.user?.phone || null);
                     setDisplayRegistered(!!profile?.user?.isRegistered);
                 } catch (e) {
@@ -75,17 +77,24 @@ export default function Wallet({ onNavigate }) {
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full grid place-items-center bg-white/10 border border-white/20 text-white">👤</div>
-                            <span className="text-white font-medium">{displayPhone || 'Not registered'}</span>
+                            <div className="flex flex-col">
+                                <span className="text-white font-medium">
+                                    {displayPhone || profileData?.user?.firstName || user?.firstName || 'Player'}
+                                </span>
+                                {displayPhone && (
+                                    <span className="text-slate-300 text-xs">{displayPhone}</span>
+                                )}
+                            </div>
                         </div>
                         {displayRegistered ? (
-                            <div className="flex items-center gap-2 px-3 py-1 rounded-full badge-verified">
-                                <span className="text-white text-sm">✓</span>
-                                <span className="text-white text-sm font-medium">Verified</span>
+                            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-600/20 border border-green-400/30">
+                                <span className="text-green-400 text-sm">✓</span>
+                                <span className="text-green-300 text-sm font-medium">Verified</span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 bg-yellow-600/90 px-3 py-1 rounded-full border border-yellow-300/30">
-                                <span className="text-white text-sm">!</span>
-                                <span className="text-white text-sm font-medium">Not registered</span>
+                            <div className="flex items-center gap-2 bg-yellow-600/20 px-3 py-1 rounded-full border border-yellow-400/30">
+                                <span className="text-yellow-400 text-sm">!</span>
+                                <span className="text-yellow-300 text-sm font-medium">Not registered</span>
                             </div>
                         )}
                     </div>
