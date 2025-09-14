@@ -77,6 +77,42 @@ export function AuthProvider({ children }) {
                 isTelegramWebApp: window?.Telegram?.WebApp?.platform === 'web'
             });
 
+            console.log('initData check result:', {
+                initData: initData,
+                initDataType: typeof initData,
+                initDataLength: initData?.length,
+                isEmpty: !initData,
+                isFalsy: !initData
+            });
+
+            // Force bypass if we're on the production domain and have hash data
+            if (window.location.hostname === 'bingo-frontend-28pi.onrender.com' && window.location.hash.includes('tgWebAppData')) {
+                console.log('FORCE BYPASS: Found hash data on production domain');
+                const forceHashParams = new URLSearchParams(window.location.hash.substring(1));
+                const forceInitData = forceHashParams.get('tgWebAppData');
+                if (forceInitData) {
+                    try {
+                        console.log('Using force bypass with initData');
+                        const out = await verifyTelegram(forceInitData);
+                        setSessionId(out.sessionId);
+                        localStorage.setItem('sessionId', out.sessionId);
+                        let mergedUser = out.user;
+                        try {
+                            const prof = await fetchProfileWithSession(out.sessionId);
+                            if (prof?.user) {
+                                mergedUser = { ...mergedUser, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                            }
+                        } catch { }
+                        setUser(mergedUser);
+                        localStorage.setItem('user', JSON.stringify(mergedUser));
+                        setIsLoading(false);
+                        return;
+                    } catch (e) {
+                        console.error('Force bypass failed:', e);
+                    }
+                }
+            }
+
             if (!initData) {
                 console.error('No Telegram initData available - this should only happen when not accessed through Telegram');
                 console.error('Debug info:', {
