@@ -70,9 +70,22 @@ export function AuthProvider({ children }) {
 
             if (!initData) {
                 console.error('No Telegram initData available - this should only happen when not accessed through Telegram');
+                console.error('Debug info:', {
+                    windowTelegram: !!window?.Telegram,
+                    windowWebApp: !!window?.Telegram?.WebApp,
+                    initDataFromWebApp: window?.Telegram?.WebApp?.initData,
+                    initDataFromURL: new URLSearchParams(window.location.search).get('tgWebAppData'),
+                    currentURL: window.location.href,
+                    referrer: document.referrer,
+                    userAgent: navigator.userAgent
+                });
 
                 // Temporary bypass for testing - remove this in production
-                if (window.location.hostname === 'bingo-frontend-28pi.onrender.com') {
+                const isProduction = window.location.hostname === 'bingo-frontend-28pi.onrender.com' ||
+                    window.location.hostname.includes('vercel.app') ||
+                    window.location.hostname.includes('netlify.app');
+
+                if (isProduction) {
                     console.log('Using test mode for deployed app');
                     // Create a test session for debugging
                     const testSessionId = 'test-session-' + Date.now();
