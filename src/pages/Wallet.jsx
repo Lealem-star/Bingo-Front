@@ -71,7 +71,7 @@ export default function Wallet({ onNavigate }) {
                 </div>
             </header>
 
-            <main className="p-4 space-y-5">
+            <main className="p-4 space-y-8">
                 {/* User Info Section */}
                 <div className="wallet-panel">
                     <div className="flex items-center justify-between mb-4">
@@ -122,7 +122,7 @@ export default function Wallet({ onNavigate }) {
                     </div>
                 ) : activeTab === 'balance' ? (
                     /* Wallet Balances */
-                    <div className="space-y-4">
+                    <div className="space-y-8">
                         {/* Main Wallet */}
                         <div className="wallet-card">
                             <div className="flex items-center justify-between">
@@ -158,7 +158,7 @@ export default function Wallet({ onNavigate }) {
                     </div>
                 ) : (
                     /* Transaction History */
-                    <div className="space-y-4">
+                    <div className="space-y-8">
                         <h3 className="history-title">Recent Transactions</h3>
                         {transactions.length === 0 ? (
                             <div className="rounded-2xl p-8 border border-white/10 bg-slate-900/40 text-center">
@@ -191,7 +191,7 @@ export default function Wallet({ onNavigate }) {
 
                 {/* Convert Section - show only on Balance tab */}
                 {activeTab === 'balance' && (
-                    <div className="wallet-card space-y-3">
+                    <div className="wallet-card space-y-3 mt-8">
                         <input
                             value={coins}
                             onChange={(e) => setCoins(e.target.value)}
