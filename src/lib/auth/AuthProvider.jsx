@@ -52,7 +52,12 @@ export function AuthProvider({ children }) {
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Support both SDK initData and URL param fallback (tgWebAppData)
-            const initData = window?.Telegram?.WebApp?.initData || new URLSearchParams(window.location.search).get('tgWebAppData');
+            // Check URL hash first, then search params, then WebApp initData
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            const searchParams = new URLSearchParams(window.location.search);
+            const initData = window?.Telegram?.WebApp?.initData ||
+                hashParams.get('tgWebAppData') ||
+                searchParams.get('tgWebAppData');
 
             console.log('Telegram WebApp check:', {
                 hasTelegram: !!window?.Telegram,
@@ -60,6 +65,10 @@ export function AuthProvider({ children }) {
                 initData: initData ? 'present' : 'missing',
                 initDataLength: initData?.length || 0,
                 urlParams: window.location.search,
+                urlHash: window.location.hash,
+                initDataFromWebApp: window?.Telegram?.WebApp?.initData,
+                initDataFromHash: hashParams.get('tgWebAppData'),
+                initDataFromSearch: searchParams.get('tgWebAppData'),
                 fullInitData: initData,
                 telegramWebApp: window?.Telegram?.WebApp,
                 isExpanded: window?.Telegram?.WebApp?.isExpanded,
