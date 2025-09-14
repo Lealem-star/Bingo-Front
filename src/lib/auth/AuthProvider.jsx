@@ -83,8 +83,11 @@ export function AuthProvider({ children }) {
                     windowTelegram: !!window?.Telegram,
                     windowWebApp: !!window?.Telegram?.WebApp,
                     initDataFromWebApp: window?.Telegram?.WebApp?.initData,
-                    initDataFromURL: new URLSearchParams(window.location.search).get('tgWebAppData'),
+                    initDataFromHash: hashParams.get('tgWebAppData'),
+                    initDataFromSearch: searchParams.get('tgWebAppData'),
                     currentURL: window.location.href,
+                    urlHash: window.location.hash,
+                    urlSearch: window.location.search,
                     referrer: document.referrer,
                     userAgent: navigator.userAgent
                 });
@@ -93,6 +96,31 @@ export function AuthProvider({ children }) {
                 const isProduction = window.location.hostname === 'bingo-frontend-28pi.onrender.com' ||
                     window.location.hostname.includes('vercel.app') ||
                     window.location.hostname.includes('netlify.app');
+
+                // Check if we have initData in hash but it's not being read properly
+                const hashInitData = hashParams.get('tgWebAppData');
+                if (hashInitData && !initData) {
+                    console.log('Found initData in hash, using it directly');
+                    try {
+                        const out = await verifyTelegram(hashInitData);
+                        setSessionId(out.sessionId);
+                        localStorage.setItem('sessionId', out.sessionId);
+                        // Hydrate profile to ensure phone/isRegistered available
+                        let mergedUser = out.user;
+                        try {
+                            const prof = await fetchProfileWithSession(out.sessionId);
+                            if (prof?.user) {
+                                mergedUser = { ...mergedUser, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                            }
+                        } catch { }
+                        setUser(mergedUser);
+                        localStorage.setItem('user', JSON.stringify(mergedUser));
+                        setIsLoading(false);
+                        return;
+                    } catch (e) {
+                        console.error('Hash initData authentication failed:', e);
+                    }
+                }
 
                 if (isProduction) {
                     console.log('Using test mode for deployed app');
