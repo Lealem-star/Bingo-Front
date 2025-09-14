@@ -26,13 +26,13 @@ export default function Profile({ onNavigate }) {
     const [error, setError] = useState(null);
     const { user, sessionId } = useAuth();
 
-    const displayName = profileData.user?.firstName || user?.firstName || 'User';
+    const displayName = profileData.user?.firstName || user?.firstName || 'Player';
     const initials = displayName.charAt(0).toUpperCase();
 
     // Fetch profile data
     useEffect(() => {
         const fetchProfileData = async () => {
-            console.log('Profile useEffect triggered, sessionId:', sessionId, 'user:', user);
+            console.log('Profile useEffect triggered, sessionId:', sessionId);
             if (!sessionId) {
                 console.log('No sessionId available for profile fetch');
                 setLoading(false);
@@ -54,7 +54,7 @@ export default function Profile({ onNavigate }) {
         };
 
         fetchProfileData();
-    }, [sessionId, user]);
+    }, [sessionId]);
 
     return (
         <div className="min-h-screen overflow-y-auto pb-28 bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
@@ -130,38 +130,6 @@ export default function Profile({ onNavigate }) {
                             </div>
                         </div>
 
-                        {/* User Information */}
-                        <div className="space-y-3">
-                            <h2 className="text-white text-base font-semibold">User Information</h2>
-                            <div className="bg-slate-800/50 p-4 rounded-lg space-y-2">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-300">Full Name:</span>
-                                    <span className="text-white font-medium">
-                                        {profileData.user?.firstName} {profileData.user?.lastName}
-                                    </span>
-                                </div>
-                                {profileData.user?.phone && (
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-slate-300">Phone:</span>
-                                        <span className="text-white font-medium">{profileData.user.phone}</span>
-                                    </div>
-                                )}
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-300">Registration Status:</span>
-                                    <span className={`font-medium ${profileData.user?.isRegistered ? 'text-green-400' : 'text-yellow-400'}`}>
-                                        {profileData.user?.isRegistered ? 'Verified' : 'Pending'}
-                                    </span>
-                                </div>
-                                {profileData.user?.registrationDate && (
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-slate-300">Member Since:</span>
-                                        <span className="text-white font-medium">
-                                            {new Date(profileData.user.registrationDate).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
 
                         {/* Game Statistics */}
                         <div className="space-y-3">
