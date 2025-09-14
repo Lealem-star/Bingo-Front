@@ -117,8 +117,11 @@ export default function Wallet({ onNavigate }) {
                         {/* Main Wallet */}
                         <div className="wallet-card">
                             <div className="flex items-center justify-between">
-                                <span className="label">Main Wallet</span>
-                                <span className="value">{wallet.main}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="label">Main Wallet</span>
+                                    <span className="text-blue-400 text-sm">💰</span>
+                                </div>
+                                <span className="value">{wallet.main?.toLocaleString() || 0}</span>
                             </div>
                         </div>
 
@@ -127,9 +130,9 @@ export default function Wallet({ onNavigate }) {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <span className="label">Play Wallet</span>
-                                    <span className="text-green-400 text-sm">🔗</span>
+                                    <span className="text-green-400 text-sm">🎮</span>
                                 </div>
-                                <span className="value green">{wallet.play}</span>
+                                <span className="value green">{wallet.play?.toLocaleString() || 0}</span>
                             </div>
                         </div>
 
@@ -140,7 +143,7 @@ export default function Wallet({ onNavigate }) {
                                     <span className="label">Coins</span>
                                     <span className="text-yellow-400 text-sm">🪙</span>
                                 </div>
-                                <span className="value yellow">{wallet.coins}</span>
+                                <span className="value yellow">{wallet.coins?.toLocaleString() || 0}</span>
                             </div>
                         </div>
                     </div>

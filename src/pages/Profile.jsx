@@ -63,6 +63,12 @@ export default function Profile({ onNavigate }) {
                 <div className="flex flex-col items-center gap-3">
                     <div className="profile-avatar">{initials}</div>
                     <h1 className="text-2xl font-bold text-white">{displayName}</h1>
+                    {profileData.user?.isRegistered && (
+                        <div className="flex items-center gap-2 px-3 py-1 bg-green-600/20 border border-green-400/30 rounded-full">
+                            <span className="text-green-400 text-sm">✓</span>
+                            <span className="text-green-300 text-sm font-medium">Verified User</span>
+                        </div>
+                    )}
                 </div>
             </header>
 
@@ -90,19 +96,19 @@ export default function Profile({ onNavigate }) {
                             {/* Main Wallet */}
                             <div className="profile-card">
                                 <div className="title">
-                                    <span>📘</span>
+                                    <span>💰</span>
                                     <span>Main Wallet</span>
                                 </div>
-                                <div className="value">{profileData.wallet.main}</div>
+                                <div className="value">{profileData.wallet.main?.toLocaleString() || 0}</div>
                             </div>
 
                             {/* Play Wallet */}
                             <div className="profile-card">
                                 <div className="title">
-                                    <span>📗</span>
+                                    <span>🎮</span>
                                     <span>Play Wallet</span>
                                 </div>
-                                <div className="value">{profileData.wallet.play}</div>
+                                <div className="value">{profileData.wallet.play?.toLocaleString() || 0}</div>
                             </div>
 
                             {/* Total Coins */}
@@ -111,7 +117,7 @@ export default function Profile({ onNavigate }) {
                                     <span>🪙</span>
                                     <span>Total Coins</span>
                                 </div>
-                                <div className="value">{profileData.wallet.coins}</div>
+                                <div className="value">{profileData.wallet.coins?.toLocaleString() || 0}</div>
                             </div>
 
                             {/* Games Won */}
@@ -120,41 +126,60 @@ export default function Profile({ onNavigate }) {
                                     <span>🏆</span>
                                     <span>Games Won</span>
                                 </div>
-                                <div className="value">{profileData.wallet.gamesWon}</div>
+                                <div className="value">{profileData.wallet.gamesWon?.toLocaleString() || 0}</div>
                             </div>
                         </div>
 
-                        {/* Debug Info - Remove in production */}
+                        {/* User Information */}
                         <div className="space-y-3">
-                            <h2 className="text-white text-base font-semibold">Debug Info</h2>
-                            <div className="bg-slate-800/50 p-3 rounded-lg text-xs text-slate-300">
-                                <div>Session ID: {sessionId ? 'Present' : 'Missing'}</div>
-                                <div>User: {user ? JSON.stringify(user) : 'None'}</div>
-                                <div>Profile Data: {JSON.stringify(profileData)}</div>
-                                <div>API URL: {import.meta.env.VITE_API_URL || 'http://localhost:3001'}</div>
-                                <div className="mt-2 space-x-2">
-                                    <button
-                                        onClick={() => window.location.reload()}
-                                        className="px-3 py-1 bg-blue-600 text-white rounded text-xs"
-                                    >
-                                        Refresh Data
-                                    </button>
-                                    <button
-                                        onClick={async () => {
-                                            try {
-                                                const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/debug`);
-                                                const data = await res.json();
-                                                console.log('Debug endpoint response:', data);
-                                                alert('Check console for debug info');
-                                            } catch (e) {
-                                                console.error('Debug test failed:', e);
-                                                alert('Debug test failed - check console');
-                                            }
-                                        }}
-                                        className="px-3 py-1 bg-green-600 text-white rounded text-xs"
-                                    >
-                                        Test API
-                                    </button>
+                            <h2 className="text-white text-base font-semibold">User Information</h2>
+                            <div className="bg-slate-800/50 p-4 rounded-lg space-y-2">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-300">Full Name:</span>
+                                    <span className="text-white font-medium">
+                                        {profileData.user?.firstName} {profileData.user?.lastName}
+                                    </span>
+                                </div>
+                                {profileData.user?.phone && (
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-slate-300">Phone:</span>
+                                        <span className="text-white font-medium">{profileData.user.phone}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-300">Registration Status:</span>
+                                    <span className={`font-medium ${profileData.user?.isRegistered ? 'text-green-400' : 'text-yellow-400'}`}>
+                                        {profileData.user?.isRegistered ? 'Verified' : 'Pending'}
+                                    </span>
+                                </div>
+                                {profileData.user?.registrationDate && (
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-slate-300">Member Since:</span>
+                                        <span className="text-white font-medium">
+                                            {new Date(profileData.user.registrationDate).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Game Statistics */}
+                        <div className="space-y-3">
+                            <h2 className="text-white text-base font-semibold">Game Statistics</h2>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="profile-card">
+                                    <div className="title">
+                                        <span>🎮</span>
+                                        <span>Games Played</span>
+                                    </div>
+                                    <div className="value">{profileData.user.totalGamesPlayed || 0}</div>
+                                </div>
+                                <div className="profile-card">
+                                    <div className="title">
+                                        <span>🏆</span>
+                                        <span>Games Won</span>
+                                    </div>
+                                    <div className="value">{profileData.user.totalGamesWon || 0}</div>
                                 </div>
                             </div>
                         </div>
