@@ -106,7 +106,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     setPhase(evt.payload.phase);
                     setGameId(evt.payload.gameId || null);
                     setMyCard(evt.payload.card || null);
-                    setCalled(evt.payload.called || []);
+                    setCalled(evt.payload.called || evt.payload.calledNumbers || []);
                     setAvailableCards(evt.payload.availableCards || []);
                     setEndsAt(evt.payload.endsAt || evt.payload.nextStartAt || null);
                     setPlayersCount(Number(evt.payload.playersCount || playersCount));
@@ -186,28 +186,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                     <h1 className="text-center text-3xl md:text-4xl font-extrabold leading-tight mt-6 text-white">
                         Welcome to Love Bingo
                     </h1>
-                    {/* Identity summary */}
-                    <div className="mt-3">
-                        <div className="flex items-center justify-between text-white/90 text-sm">
-                            <div className="flex items-center gap-2">
-                                <span>👤 </span>
-                                <span className="font-medium">{profile?.user?.firstName || 'Player'}</span>
-                                {profile?.user?.isRegistered && (
-                                    <span className="text-green-400 text-xs">✓</span>
-                                )}
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span title="Main Wallet" className="flex items-center gap-1">
-                                    <span>💰</span>
-                                    <span className="font-medium">{profile?.wallet?.main?.toLocaleString() ?? 0}</span>
-                                </span>
-                                <span title="Play Wallet" className="flex items-center gap-1">
-                                    <span>🎮</span>
-                                    <span className="font-medium">{profile?.wallet?.play ?? 0}</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                    {/* Identity summary removed as requested */}
                 </header>
 
                 <main className="p-4 space-y-4">

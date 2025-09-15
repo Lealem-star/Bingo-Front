@@ -20,6 +20,7 @@ export default function GameLayout({
     const [showReadyMessage, setShowReadyMessage] = useState(true);
     const [recentCalledNumbers, setRecentCalledNumbers] = useState([]);
     const [winningPatternIndices, setWinningPatternIndices] = useState(null);
+    const [markedNumbers, setMarkedNumbers] = useState([]); // player-marked numbers on their cartella
     const hasLocalBingo = Array.isArray(winningPatternIndices) && winningPatternIndices.length > 0;
 
     // Stable game ID per mount: LB + 6 digits, unless provided via props
@@ -118,7 +119,8 @@ export default function GameLayout({
                 return cartellaNumbers[row]?.[col];
             }).filter(n => n !== 0);
 
-            if (patternNumbers.every(num => called.includes(num))) {
+            // For manual marking, check against player-marked numbers
+            if (patternNumbers.every(num => markedNumbers.includes(num))) {
                 return pattern;
             }
         }
@@ -135,7 +137,20 @@ export default function GameLayout({
     useEffect(() => {
         const pattern = findWinningPattern();
         setWinningPatternIndices(pattern);
-    }, [called, selectedCartela]);
+    }, [markedNumbers, selectedCartela]);
+
+    // Reset marks on new cartella or when leaving/refreshing game
+    useEffect(() => {
+        setMarkedNumbers([]);
+    }, [selectedCartela, gameStatus]);
+
+    const toggleMark = (number) => {
+        if (!number || shouldWatchOnly) return;
+        setMarkedNumbers(prev => prev.includes(number)
+            ? prev.filter(n => n !== number)
+            : [...prev, number]
+        );
+    };
 
     const handleBingoClaim = () => {
         if (checkWinningPattern()) {
@@ -184,7 +199,12 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
                                     <button
                                         key={n}
-                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            : called.includes(n)
+                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
+                                            }`}
                                     >
                                         {n}
                                     </button>
@@ -196,7 +216,12 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 16).map(n => (
                                     <button
                                         key={n}
-                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            : called.includes(n)
+                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
+                                            }`}
                                     >
                                         {n}
                                     </button>
@@ -208,7 +233,12 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 31).map(n => (
                                     <button
                                         key={n}
-                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            : called.includes(n)
+                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
+                                            }`}
                                     >
                                         {n}
                                     </button>
@@ -220,7 +250,12 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 46).map(n => (
                                     <button
                                         key={n}
-                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            : called.includes(n)
+                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
+                                            }`}
                                     >
                                         {n}
                                     </button>
@@ -232,7 +267,12 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 61).map(n => (
                                     <button
                                         key={n}
-                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-colors duration-200 flex items-center justify-center ${called.includes(n) ? 'bg-amber-500/90 border-amber-300 text-white shadow' : 'bg-white/10 border-white/20 text-white'}`}
+                                        className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            : called.includes(n)
+                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
+                                            }`}
                                     >
                                         {n}
                                     </button>
@@ -379,12 +419,13 @@ export default function GameLayout({
                                                 }
 
                                                 const number = displayNumbers[row]?.[col] || 0;
-                                                const isCalled = called.includes(number);
+                                                const isMarked = markedNumbers.includes(number);
 
                                                 return (
                                                     <button
                                                         key={i}
-                                                        className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isCalled ? 'bg-orange-500/90 border-orange-400 text-white' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                                                        onClick={() => toggleMark(number)}
+                                                        className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isMarked ? 'bg-green-500 border-green-400 text-white' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
                                                     >
                                                         {number}
                                                     </button>

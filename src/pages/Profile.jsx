@@ -16,9 +16,8 @@ export default function Profile({ onNavigate }) {
             registrationDate: new Date()
         },
         wallet: {
-            main: 0,
-            play: 50.0,
-            coins: 1,
+            balance: 0,
+            coins: 0,
             gamesWon: 0
         }
     });
@@ -93,22 +92,13 @@ export default function Profile({ onNavigate }) {
                     <>
                         {/* Wallet & Statistics Cards - using explicit profile CSS for consistent layout */}
                         <div className="profile-cards">
-                            {/* Main Wallet */}
+                            {/* Wallet Balance */}
                             <div className="profile-card">
                                 <div className="title">
                                     <span>💰</span>
-                                    <span>Main Wallet</span>
+                                    <span>Wallet</span>
                                 </div>
-                                <div className="value">{profileData.wallet.main?.toLocaleString() || 0}</div>
-                            </div>
-
-                            {/* Play Wallet */}
-                            <div className="profile-card">
-                                <div className="title">
-                                    <span>🎮</span>
-                                    <span>Play Wallet</span>
-                                </div>
-                                <div className="value">{profileData.wallet.play?.toLocaleString() || 0}</div>
+                                <div className="value">{profileData.wallet.balance?.toLocaleString() || 0}</div>
                             </div>
 
                             {/* Total Coins */}
@@ -131,26 +121,7 @@ export default function Profile({ onNavigate }) {
                         </div>
 
 
-                        {/* Game Statistics */}
-                        <div className="space-y-3">
-                            <h2 className="text-white text-base font-semibold">Game Statistics</h2>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="profile-card">
-                                    <div className="title">
-                                        <span>🎮</span>
-                                        <span>Games Played</span>
-                                    </div>
-                                    <div className="value">{profileData.user.totalGamesPlayed || 0}</div>
-                                </div>
-                                <div className="profile-card">
-                                    <div className="title">
-                                        <span>🏆</span>
-                                        <span>Games Won</span>
-                                    </div>
-                                    <div className="value">{profileData.user.totalGamesWon || 0}</div>
-                                </div>
-                            </div>
-                        </div>
+                        {/* Game Statistics removed as requested */}
 
                         {/* Settings Section */}
                         <div className="space-y-3">

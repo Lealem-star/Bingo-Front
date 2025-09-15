@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import CartellaCard from '../components/CartellaCard';
 import BottomNav from '../components/BottomNav';
 import { useAuth } from '../lib/auth/AuthProvider';
 import { apiFetch } from '../lib/api/client';
+import { useGameSocket } from '../lib/ws/useGameSocket';
 
 export default function CartelaSelection({ onNavigate, stake, onCartelaSelected }) {
     const [selectedCartela, setSelectedCartela] = useState(null);
@@ -14,15 +15,44 @@ export default function CartelaSelection({ onNavigate, stake, onCartelaSelected 
     const [toastProgress, setToastProgress] = useState(100);
     const [toastPosition, setToastPosition] = useState({ x: 0, y: 0 });
     const { sessionId } = useAuth();
+    const [takenCards, setTakenCards] = useState([]);
 
     // Fetch wallet balance
     useEffect(() => {
         if (sessionId) {
             apiFetch('/wallet', { sessionId })
-                .then(wallet => setWalletBalance(wallet.play || 0))
+                .then(wallet => setWalletBalance(wallet.balance || 0))
                 .catch(() => setWalletBalance(0));
         }
     }, [sessionId]);
+
+    // Realtime selection via websocket
+    const wsUrl = useMemo(() => {
+        const base = import.meta.env.VITE_WS_URL || 'ws://localhost:3001/ws';
+        return stake ? `${base}?stake=${stake}` : null;
+    }, [stake]);
+
+    const { send } = useGameSocket(wsUrl, {
+        token: sessionId,
+        onEvent: (evt) => {
+            switch (evt.type) {
+                case 'registration_open':
+                case 'registration_update':
+                case 'snapshot': {
+                    const serverTaken = evt.payload?.takenCards || [];
+                    if (Array.isArray(serverTaken)) setTakenCards(serverTaken);
+                    const yourSel = evt.payload?.yourSelection;
+                    if (yourSel) setSelectedCartela(yourSel);
+                    break;
+                }
+                case 'selection_confirmed':
+                    if (evt.payload?.cardNumber) setSelectedCartela(evt.payload.cardNumber);
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
 
     // Timer effect with auto-restart
     useEffect(() => {
@@ -76,9 +106,15 @@ export default function CartelaSelection({ onNavigate, stake, onCartelaSelected 
             return;
         }
 
+        // If taken by someone else, ignore
+        if (takenCards.includes(cartelaNumber)) return;
+
         setSelectedCartela(cartelaNumber);
         setSelectionCount(prev => prev + 1);
         setHasSelectedPlayers(true);
+
+        // Inform server about selection
+        try { send('select_card', { cardNumber: cartelaNumber }); } catch (_) { }
     };
 
     const confirmSelection = () => {
@@ -159,7 +195,7 @@ export default function CartelaSelection({ onNavigate, stake, onCartelaSelected 
                     <div className="flex items-center justify-between">
                         <div className="flex gap-2">
                             <div className="wallet-box">
-                                <div className="wallet-label">Play Wallet</div>
+                                <div className="wallet-label">Wallet</div>
                                 <div className={`wallet-value ${walletBalance < stake ? 'text-red-400' : 'text-green-400'}`}>
                                     {walletBalance}
                                 </div>
@@ -178,16 +214,20 @@ export default function CartelaSelection({ onNavigate, stake, onCartelaSelected 
                 <main className="p-4">
                     {/* Number Selection Grid */}
                     <div className="cartela-numbers-grid">
-                        {Array.from({ length: 100 }, (_, i) => i + 1).map((cartelaNumber) => (
-                            <button
-                                key={cartelaNumber}
-                                onClick={(e) => selectCartela(cartelaNumber, e)}
-                                className={`cartela-number-btn ${selectedCartela === cartelaNumber ? 'cartela-number-btn-selected' : ''
-                                    } ${walletBalance < stake ? 'opacity-50' : ''}`}
-                            >
-                                {cartelaNumber}
-                            </button>
-                        ))}
+                        {Array.from({ length: 100 }, (_, i) => i + 1).map((cartelaNumber) => {
+                            const isTaken = takenCards.includes(cartelaNumber);
+                            const isMine = selectedCartela === cartelaNumber;
+                            return (
+                                <button
+                                    key={cartelaNumber}
+                                    onClick={(e) => selectCartela(cartelaNumber, e)}
+                                    disabled={walletBalance < stake}
+                                    className={`cartela-number-btn ${isMine ? 'cartela-number-btn-selected' : ''} ${isTaken && !isMine ? 'bg-red-500/70 text-white border-red-300' : ''} ${walletBalance < stake ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    {cartelaNumber}
+                                </button>
+                            );
+                        })}
                     </div>
 
                     {/* Selected Cartela Preview */}
