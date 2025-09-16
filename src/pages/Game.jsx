@@ -22,6 +22,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
     const [currentCalledNumber, setCurrentCalledNumber] = useState(null);
     const [playersCount, setPlayersCount] = useState(0);
     const [profile, setProfile] = useState(null);
+    const [wallet, setWallet] = useState({ balance: 0, coins: 0, gamesWon: 0 });
 
     // Update stake when selectedStake prop changes
     useEffect(() => {
@@ -150,6 +151,19 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
         return () => { cancelled = true; };
     }, [sessionId]);
 
+    // Fetch wallet balance so GameLayout can determine play vs watch
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            if (!sessionId) return;
+            try {
+                const w = await apiFetch('/wallet', { sessionId });
+                if (!cancelled) setWallet(w);
+            } catch (_) { }
+        })();
+        return () => { cancelled = true; };
+    }, [sessionId]);
+
     // Leave: return to origin (stake selection) and clear session state
     const handleLeave = () => {
         if (gameId) {
@@ -221,7 +235,7 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
             <GameLayout
                 stake={stake}
                 called={called}
-                selectedCartela={selectedCartela}
+                selectedCartela={myCard?.id || selectedCartela}
                 onClaimBingo={claimBingo}
                 onNavigate={onNavigate}
                 onLeave={handleLeave}
@@ -229,6 +243,9 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                 currentCalledNumber={currentCalledNumber}
                 onRefresh={() => window.location.reload()}
                 playersCount={playersCount}
+                walletBalance={Number(wallet?.balance || 0)}
+                isWatchingOnly={!myCard}
+                gamePhase={phase === 'running' ? 'playing' : (phase === 'announce' ? 'finished' : 'waiting')}
             />
             <WinnerAnnounce open={showWinners} onClose={() => setShowWinners(false)} winners={winners} />
             <BottomNav current="game" onNavigate={onNavigate} />

@@ -19,6 +19,9 @@ export default function GameLayout({
     const [showReadyMessage, setShowReadyMessage] = useState(true);
     const [recentCalledNumbers, setRecentCalledNumbers] = useState([]);
     const [winningPatternIndices, setWinningPatternIndices] = useState(null);
+    const [isAudioOn, setIsAudioOn] = useState(() => {
+        try { const v = localStorage.getItem('audioOn'); return v ? v === 'true' : true; } catch { return true; }
+    });
     const [markedNumbers, setMarkedNumbers] = useState([]); // player-marked numbers on their cartella
     const hasLocalBingo = Array.isArray(winningPatternIndices) && winningPatternIndices.length > 0;
 
@@ -49,6 +52,14 @@ export default function GameLayout({
             setShowReadyMessage(false);
         }
     }, [gameStatus]);
+
+    const toggleAudio = () => {
+        setIsAudioOn(prev => {
+            const next = !prev;
+            try { localStorage.setItem('audioOn', String(next)); } catch { }
+            return next;
+        });
+    };
 
     // Update recent called numbers (keep latest 4, newest on the right)
     useEffect(() => {
@@ -163,28 +174,28 @@ export default function GameLayout({
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
             <div className="max-w-md mx-auto px-3 py-3">
-                {/* Top Information Bar - 5 clickable buttons */}
-                <div className="flex justify-between p-2 bg-purple-800/40 rounded-xl ring-1 ring-white/10 shadow-lg shadow-black/20 backdrop-blur-sm">
-                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
-                        <div className="text-xs text-purple-200">Game ID</div>
-                        <div className="text-white font-semibold text-sm">{gameIdRef.current}</div>
-                    </button>
-                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
-                        <div className="text-xs text-purple-200">Players</div>
-                        <div className="text-white font-semibold text-sm">{playersCount}</div>
-                    </button>
-                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
-                        <div className="text-xs text-purple-200">Bet</div>
-                        <div className="text-white font-semibold text-sm">{stake}</div>
-                    </button>
-                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
-                        <div className="text-xs text-purple-200">Derash</div>
-                        <div className="text-white font-semibold text-sm">{derashAmount}</div>
-                    </button>
-                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
-                        <div className="text-xs text-purple-200">Called</div>
-                        <div className="text-white font-semibold text-sm">{called.length}</div>
-                    </button>
+                {/* Top Information Bar - Cartella Selection style */}
+                <div className="flex items-stretch gap-2 p-2 rounded-xl bg-purple-800/20 ring-1 ring-white/10 shadow-lg shadow-black/20 backdrop-blur-sm">
+                    <div className="wallet-box flex-1">
+                        <div className="wallet-label">Game ID</div>
+                        <div className="wallet-value">{gameIdRef.current}</div>
+                    </div>
+                    <div className="wallet-box flex-1">
+                        <div className="wallet-label">Players</div>
+                        <div className="wallet-value">{playersCount}</div>
+                    </div>
+                    <div className="wallet-box flex-1">
+                        <div className="wallet-label">Bet</div>
+                        <div className="wallet-value">{stake}</div>
+                    </div>
+                    <div className="wallet-box flex-1">
+                        <div className="wallet-label">Derash</div>
+                        <div className="wallet-value">{derashAmount}</div>
+                    </div>
+                    <div className="wallet-box flex-1">
+                        <div className="wallet-label">Called</div>
+                        <div className="wallet-value">{called.length}</div>
+                    </div>
                 </div>
 
                 {/* Main Content Area - 2 Column Layout (Left grid, Right stacked) */}
@@ -194,7 +205,7 @@ export default function GameLayout({
                         <div className="grid grid-cols-5 gap-1">
                             {/* B Column */}
                             <div className="space-y-0.5">
-                                <div className="text-center text-white font-bold text-[11px] bg-blue-600 rounded-md py-1 shadow">B</div>
+                                <div className="cartela-letter bg-blue-600">B</div>
                                 {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
                                     <button
                                         key={n}
@@ -206,7 +217,7 @@ export default function GameLayout({
                             </div>
                             {/* I Column */}
                             <div className="space-y-0.5">
-                                <div className="text-center text-white font-bold text-[11px] bg-purple-600 rounded-md py-1 shadow">I</div>
+                                <div className="cartela-letter bg-purple-600">I</div>
                                 {Array.from({ length: 15 }, (_, i) => i + 16).map(n => (
                                     <button
                                         key={n}
@@ -218,7 +229,7 @@ export default function GameLayout({
                             </div>
                             {/* N Column */}
                             <div className="space-y-0.5">
-                                <div className="text-center text-white font-bold text-[11px] bg-green-600 rounded-md py-1 shadow">N</div>
+                                <div className="cartela-letter bg-green-600">N</div>
                                 {Array.from({ length: 15 }, (_, i) => i + 31).map(n => (
                                     <button
                                         key={n}
@@ -230,7 +241,7 @@ export default function GameLayout({
                             </div>
                             {/* G Column */}
                             <div className="space-y-0.5">
-                                <div className="text-center text-white font-bold text-[11px] bg-pink-600 rounded-md py-1 shadow">G</div>
+                                <div className="cartela-letter bg-orange-600">G</div>
                                 {Array.from({ length: 15 }, (_, i) => i + 46).map(n => (
                                     <button
                                         key={n}
@@ -242,7 +253,7 @@ export default function GameLayout({
                             </div>
                             {/* O Column */}
                             <div className="space-y-0.5">
-                                <div className="text-center text-white font-bold text-[11px] bg-orange-600 rounded-md py-1 shadow">O</div>
+                                <div className="cartela-letter bg-red-600">O</div>
                                 {Array.from({ length: 15 }, (_, i) => i + 61).map(n => (
                                     <button
                                         key={n}
@@ -255,6 +266,11 @@ export default function GameLayout({
                         </div>
                     </div>
 
+
+
+
+
+
                     {/* Right Side - Two Cards Stacked */}
                     <div className="space-y-3">
                         {/* Right Top Card - Game Status */}
@@ -264,13 +280,13 @@ export default function GameLayout({
                             <div className="flex items-center justify-between mb-2">
                                 {showReadyMessage ? (
                                     <div className="flex items-center gap-2 w-full mr-2">
-                                        <div className="flex gap-2">
-                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
-                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
-                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full"></div>
+                                        <div className="flex gap-1">
+                                            <div className="w-2.5 h-2.5 bg-pink-400 rounded-full animate-pulse"></div>
+                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full animate-pulse"></div>
+                                            <div className="w-2.5 h-2.5 bg-amber-300 rounded-full animate-pulse"></div>
                                         </div>
                                         <div className="flex-1 h-3 bg-white/10 rounded-full border border-white/15 overflow-hidden">
-                                            <div className="h-full w-2/3 bg-gradient-to-r from-pink-500 to-purple-500"></div>
+                                            <div className="h-full w-3/4 bg-gradient-to-r from-amber-400 via-pink-500 to-purple-500 animate-pulse"></div>
                                         </div>
                                     </div>
                                 ) : (
@@ -283,7 +299,9 @@ export default function GameLayout({
                                         })}
                                     </div>
                                 )}
-                                <button className="text-white text-sm">🔊</button>
+                                <button onClick={toggleAudio} aria-pressed={isAudioOn} className={`text-white text-sm w-8 h-8 grid place-items-center rounded-full border ${isAudioOn ? 'bg-green-600/30 border-green-400/40' : 'bg-white/10 border-white/20'}`}>
+                                    {isAudioOn ? '🔊' : '🔈'}
+                                </button>
                             </div>
 
                             {/* Game Message or Called Numbers */}
@@ -297,9 +315,7 @@ export default function GameLayout({
                                         <div className="w-28 h-28 rounded-full bg-gradient-to-br from-amber-300 to-yellow-500 ring-4 ring-yellow-300 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.6)] animate-pop">
                                             <div className="text-purple-800 font-extrabold text-lg drop-shadow">{`${getLetterForNumber(currentCalledNumber)}-${currentCalledNumber}`}</div>
                                         </div>
-                                    ) : (
-                                        <div className="w-20 h-20 rounded-full bg-white/70 ring-2 ring-white/40 flex items-center justify-center text-purple-700/60 font-bold">0-75</div>
-                                    )}
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -325,7 +341,8 @@ export default function GameLayout({
 
 
                         {/* Right Bottom Card - User's Cartella or Watching Only */}
-                        <div className="rounded-xl p-2 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20">
+                        <div className="relative rounded-xl p-2 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20 overflow-hidden">
+                            <div className="shimmer-overlay"></div>
                             {shouldWatchOnly ? (
                                 /* Watching Only Mode */
                                 <div className="rounded-lg p-4 text-center bg-transparent">
