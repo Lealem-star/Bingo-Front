@@ -198,7 +198,7 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 1).map(n => (
                                     <button
                                         key={n}
-                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
+                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-yellow-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
                                     >
                                         {n}
                                     </button>
@@ -210,7 +210,7 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 16).map(n => (
                                     <button
                                         key={n}
-                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
+                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-yellow-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
                                     >
                                         {n}
                                     </button>
@@ -222,7 +222,7 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 31).map(n => (
                                     <button
                                         key={n}
-                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
+                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-yellow-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
                                     >
                                         {n}
                                     </button>
@@ -234,7 +234,7 @@ export default function GameLayout({
                                 {Array.from({ length: 15 }, (_, i) => i + 46).map(n => (
                                     <button
                                         key={n}
-                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
+                                        className={`cartela-number-btn text-[11px] leading-none ${called.includes(n) ? 'cartela-number-btn-selected' : ''} ${n === currentCalledNumber ? 'ring-2 ring-yellow-300 animate-pulse animate-pop scale-[1.02]' : ''}`}
                                     >
                                         {n}
                                     </button>

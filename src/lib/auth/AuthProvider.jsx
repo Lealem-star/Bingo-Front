@@ -33,6 +33,39 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         (async () => {
+            // If Telegram initData is present, ALWAYS re-verify and refresh session to avoid stale local sessions
+            try {
+                const hashParamsEarly = new URLSearchParams(window.location.hash.substring(1));
+                const searchParamsEarly = new URLSearchParams(window.location.search);
+                const initDataEarly = window?.Telegram?.WebApp?.initData ||
+                    hashParamsEarly.get('tgWebAppData') ||
+                    searchParamsEarly.get('tgWebAppData');
+
+                if (initDataEarly) {
+                    const out = await verifyTelegram(initDataEarly);
+                    // If switching accounts, replace cached session/user entirely
+                    const prevUser = (() => { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } })();
+                    const isDifferentUser = prevUser && prevUser.id && prevUser.id !== out.user?.id;
+                    if (isDifferentUser) {
+                        localStorage.removeItem('user');
+                    }
+                    setSessionId(out.sessionId);
+                    localStorage.setItem('sessionId', out.sessionId);
+
+                    let mergedUser = out.user;
+                    try {
+                        const prof = await fetchProfileWithSession(out.sessionId);
+                        if (prof?.user) {
+                            mergedUser = { ...mergedUser, ...{ firstName: prof.user.firstName, lastName: prof.user.lastName, phone: prof.user.phone, isRegistered: prof.user.isRegistered } };
+                        }
+                    } catch { }
+                    setUser(mergedUser);
+                    localStorage.setItem('user', JSON.stringify(mergedUser));
+                    setIsLoading(false);
+                    return; // short-circuit: we've just established fresh session from Telegram
+                }
+            } catch { /* fall back to existing session flow */ }
+
             if (sessionId && user) {
                 // Try to hydrate missing fields (phone/isRegistered) in background
                 try {
