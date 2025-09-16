@@ -165,24 +165,24 @@ export default function GameLayout({
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
             <div className="max-w-md mx-auto px-3 py-3">
                 {/* Top Information Bar - 5 clickable buttons */}
-                <div className="flex justify-between p-2 bg-purple-800/40 rounded-xl ring-1 ring-white/10 shadow-lg shadow-black/20">
-                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                <div className="flex justify-between p-2 bg-purple-800/40 rounded-xl ring-1 ring-white/10 shadow-lg shadow-black/20 backdrop-blur-sm">
+                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
                         <div className="text-xs text-purple-200">Game ID</div>
                         <div className="text-white font-semibold text-sm">{gameIdRef.current}</div>
                     </button>
-                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
                         <div className="text-xs text-purple-200">Players</div>
                         <div className="text-white font-semibold text-sm">{playersCount}</div>
                     </button>
-                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
                         <div className="text-xs text-purple-200">Bet</div>
                         <div className="text-white font-semibold text-sm">{stake}</div>
                     </button>
-                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
                         <div className="text-xs text-purple-200">Derash</div>
                         <div className="text-white font-semibold text-sm">{derashAmount}</div>
                     </button>
-                    <button className="bg-purple-800/60 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors">
+                    <button className="bg-purple-800/60/50 rounded-lg px-2 py-1 min-w-0 flex-1 mx-1 hover:bg-purple-700/60 transition-colors border border-white/10">
                         <div className="text-xs text-purple-200">Called</div>
                         <div className="text-white font-semibold text-sm">{called.length}</div>
                     </button>
@@ -200,9 +200,9 @@ export default function GameLayout({
                                     <button
                                         key={n}
                                         className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
-                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02] shadow'
                                             : called.includes(n)
-                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                ? 'bg-red-600 text-white border-red-400 shadow animate-pop'
                                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
                                             }`}
                                     >
@@ -217,9 +217,9 @@ export default function GameLayout({
                                     <button
                                         key={n}
                                         className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
-                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02] shadow'
                                             : called.includes(n)
-                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                ? 'bg-red-600 text-white border-red-400 shadow animate-pop'
                                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
                                             }`}
                                     >
@@ -234,9 +234,9 @@ export default function GameLayout({
                                     <button
                                         key={n}
                                         className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
-                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02] shadow'
                                             : called.includes(n)
-                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                ? 'bg-red-600 text-white border-red-400 shadow animate-pop'
                                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
                                             }`}
                                     >
@@ -251,9 +251,9 @@ export default function GameLayout({
                                     <button
                                         key={n}
                                         className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
-                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02] shadow'
                                             : called.includes(n)
-                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                ? 'bg-red-600 text-white border-red-400 shadow animate-pop'
                                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
                                             }`}
                                     >
@@ -268,9 +268,9 @@ export default function GameLayout({
                                     <button
                                         key={n}
                                         className={`w-full text-[11px] leading-none py-1 rounded-md border transition-all duration-200 flex items-center justify-center ${n === currentCalledNumber
-                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse scale-[1.02] shadow'
+                                            ? 'bg-green-500 text-white border-green-300 ring-2 ring-green-300 animate-pulse animate-pop scale-[1.02] shadow'
                                             : called.includes(n)
-                                                ? 'bg-red-600 text-white border-red-400 shadow'
+                                                ? 'bg-red-600 text-white border-red-400 shadow animate-pop'
                                                 : 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:shadow-md active:scale-[0.98]'
                                             }`}
                                     >
@@ -284,7 +284,8 @@ export default function GameLayout({
                     {/* Right Side - Two Cards Stacked */}
                     <div className="space-y-3">
                         {/* Right Top Card - Game Status */}
-                        <div className="rounded-xl p-3 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-lg shadow-black/20">
+                        <div className="relative rounded-xl p-3 bg-gradient-to-br from-purple-900/60 to-slate-900/40 ring-1 ring-white/10 shadow-xl shadow-pink-500/10 backdrop-blur-sm overflow-hidden">
+                            <div className="shimmer-overlay"></div>
                             {/* Game Status Header */}
                             <div className="flex items-center justify-between mb-2">
                                 {showReadyMessage ? (
@@ -299,11 +300,11 @@ export default function GameLayout({
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 border border-white/15">
+                                    <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 border border-white/15 shadow-lg shadow-black/30">
                                         {recentCalledNumbers.map((num, idx) => {
                                             const letter = getLetterForNumber(num);
                                             return (
-                                                <div key={`${num}-${idx}`} className={`text-white text-[11px] font-bold px-2 py-1 rounded-full ${chipBgForLetter(letter)} shadow-sm`}>{`${letter}-${num}`}</div>
+                                                <div key={`${num}-${idx}`} className={`text-white text-[11px] font-bold px-2 py-1 rounded-full ${chipBgForLetter(letter)} shadow-md ring-1 ring-white/10`}>{`${letter}-${num}`}</div>
                                             );
                                         })}
                                     </div>
@@ -319,8 +320,8 @@ export default function GameLayout({
                             <div className="text-center mb-3">
                                 <div className="mx-auto w-full rounded-md border border-white/10 bg-gradient-to-b from-black/25 to-black/10 p-3 min-h-[120px] flex items-center justify-center">
                                     {currentCalledNumber ? (
-                                        <div className="w-24 h-24 rounded-full bg-white ring-4 ring-yellow-400 flex items-center justify-center shadow">
-                                            <div className="text-purple-700 font-extrabold">{`${getLetterForNumber(currentCalledNumber)}-${currentCalledNumber}`}</div>
+                                        <div className="w-28 h-28 rounded-full bg-gradient-to-br from-amber-300 to-yellow-500 ring-4 ring-yellow-300 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.6)] animate-pop">
+                                            <div className="text-purple-800 font-extrabold text-lg drop-shadow">{`${getLetterForNumber(currentCalledNumber)}-${currentCalledNumber}`}</div>
                                         </div>
                                     ) : (
                                         <div className="w-20 h-20 rounded-full bg-white/70 ring-2 ring-white/40 flex items-center justify-center text-purple-700/60 font-bold">0-75</div>
@@ -425,7 +426,7 @@ export default function GameLayout({
                                                     <button
                                                         key={i}
                                                         onClick={() => toggleMark(number)}
-                                                        className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isMarked ? 'bg-green-500 border-green-400 text-white' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                                                        className={`w-full text-[10px] leading-none py-0.5 rounded-md border transition-colors duration-200 flex items-center justify-center ${isMarked ? 'bg-green-500 border-green-400 text-white animate-pop' : 'bg-white/10 text-white border-white/20'} ${isWinningCell ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
                                                     >
                                                         {number}
                                                     </button>

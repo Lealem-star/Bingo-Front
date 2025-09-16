@@ -717,7 +717,7 @@ body {
 }
 
 .stake-blue {
-    background: linear-gradient(135deg, #FFB6C1 0%, #DC143C 100%);
+    background: linear-gradient(to bottom right, #FFB6C1 0%, #DC143C 100%);
 }
 
 /* Status chip to mirror bottom-nav glass style */
@@ -797,6 +797,47 @@ body {
     .fade-in-up.delay-3 {
         animation: none;
     }
+}
+
+/* Micro animations */
+@keyframes popIn {
+    0% {
+        transform: scale(0.92);
+        filter: brightness(1.1);
+    }
+
+    60% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: none;
+    }
+}
+
+.animate-pop {
+    animation: popIn 320ms ease-out both;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.04) 35%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.04) 65%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.2s linear infinite;
+    pointer-events: none;
+    border-radius: inherit;
 }
 
 /* Cartela selection styles */
