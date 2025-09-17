@@ -115,6 +115,16 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                 case 'players_update':
                     setPlayersCount(Number(evt.payload.playersCount || 0));
                     break;
+                case 'selection_confirmed': {
+                    // Optimistically update players count if server doesn't push players_update immediately
+                    const serverCount = Number(evt.payload?.playersCount ?? NaN);
+                    if (!Number.isNaN(serverCount)) {
+                        setPlayersCount(serverCount);
+                    } else {
+                        setPlayersCount(prev => (prev > 0 ? prev + 1 : 1));
+                    }
+                    break;
+                }
                 default:
                     break;
             }
