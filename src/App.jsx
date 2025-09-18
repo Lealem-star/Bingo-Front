@@ -7,11 +7,13 @@ import History from './pages/History';
 import Wallet from './pages/Wallet';
 import Profile from './pages/Profile';
 import { AuthProvider } from './lib/auth/AuthProvider.jsx';
+import AdminLayout from './admin/AdminLayout.jsx';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('game');
   const [selectedStake, setSelectedStake] = useState(null);
   const [selectedCartela, setSelectedCartela] = useState(null);
+  const [isAdminApp, setIsAdminApp] = useState(false);
 
 
   const handleStakeSelected = (stake) => {
@@ -34,6 +36,8 @@ function App() {
         return <Game onNavigate={setCurrentPage} onStakeSelected={handleStakeSelected} selectedCartela={selectedCartela} selectedStake={selectedStake} />;
       case 'cartela-selection':
         return <CartelaSelection onNavigate={setCurrentPage} stake={selectedStake} onCartelaSelected={handleCartelaSelected} />;
+      case 'admin':
+        return <AdminLayout onNavigate={setCurrentPage} />;
       case 'rules':
         return <Rules onNavigate={setCurrentPage} />;
       case 'scores':

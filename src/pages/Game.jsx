@@ -23,6 +23,8 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
     const [playersCount, setPlayersCount] = useState(0);
     const [profile, setProfile] = useState(null);
     const [wallet, setWallet] = useState({ balance: 0, coins: 0, gamesWon: 0 });
+    const [adminPost, setAdminPost] = useState(null);
+    const [hidePost, setHidePost] = useState(false);
 
     // Update stake when selectedStake prop changes
     useEffect(() => {
@@ -161,6 +163,33 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
         return () => { cancelled = true; };
     }, [sessionId]);
 
+    // Fetch latest active admin post for in-app banner
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const data = await apiFetch('/admin/posts');
+                const posts = Array.isArray(data?.posts) ? data.posts : [];
+                const active = posts.filter(p => p.active);
+                if (!cancelled && active.length) {
+                    setAdminPost(active[0]);
+                    try {
+                        const dismissedId = localStorage.getItem('dismissedPostId');
+                        if (dismissedId && dismissedId === String(active[0]._id || '')) {
+                            setHidePost(true);
+                        }
+                    } catch { }
+                }
+            } catch (_) { }
+        })();
+        return () => { cancelled = true; };
+    }, []);
+
+    const dismissPost = () => {
+        setHidePost(true);
+        try { if (adminPost?._id) localStorage.setItem('dismissedPostId', String(adminPost._id)); } catch { }
+    };
+
     // Fetch wallet balance so GameLayout can determine play vs watch
     useEffect(() => {
         let cancelled = false;
@@ -211,6 +240,21 @@ export default function Game({ onNavigate, onStakeSelected, selectedCartela, sel
                         Welcome to Love Bingo
                     </h1>
                     {/* Identity summary removed as requested */}
+                    {!hidePost && adminPost && (
+                        <div className="mt-4 mx-auto max-w-md">
+                            <div className="rounded-2xl overflow-hidden ring-1 ring-white/10 bg-white/5 shadow-lg relative">
+                                <button onClick={dismissPost} className="absolute top-2 right-2 text-white/80 bg-black/40 rounded-full w-7 h-7 grid place-items-center">×</button>
+                                {adminPost.kind === 'image' ? (
+                                    <img src={adminPost.url} alt={adminPost.caption || 'Announcement'} className="w-full h-48 object-cover" />
+                                ) : (
+                                    <video src={adminPost.url} className="w-full h-48 object-cover" controls muted playsInline />
+                                )}
+                                {adminPost.caption ? (
+                                    <div className="p-3 text-white text-sm bg-black/30">{adminPost.caption}</div>
+                                ) : null}
+                            </div>
+                        </div>
+                    )}
                 </header>
 
                 <main className="p-4 space-y-4">
