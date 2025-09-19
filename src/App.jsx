@@ -19,6 +19,7 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the #
+      console.log('Hash changed to:', hash); // Debug log
       if (hash === 'admin') {
         setCurrentPage('admin');
       } else if (hash === '') {
@@ -26,8 +27,14 @@ function App() {
       }
     };
 
-    // Check initial hash
-    handleHashChange();
+    // Check initial hash immediately
+    const initialHash = window.location.hash.slice(1);
+    console.log('Initial hash:', initialHash); // Debug log
+    if (initialHash === 'admin') {
+      setCurrentPage('admin');
+    } else {
+      setCurrentPage('game');
+    }
 
     // Listen for hash changes
     window.addEventListener('hashchange', handleHashChange);
@@ -53,6 +60,12 @@ function App() {
   };
 
   const renderPage = () => {
+    // Check hash again as fallback
+    const currentHash = window.location.hash.slice(1);
+    if (currentHash === 'admin' && currentPage !== 'admin') {
+      setCurrentPage('admin');
+    }
+
     switch (currentPage) {
       case 'game':
         return <Game onNavigate={setCurrentPage} onStakeSelected={handleStakeSelected} selectedCartela={selectedCartela} selectedStake={selectedStake} />;
