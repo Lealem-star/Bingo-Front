@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Game from './pages/Game';
 import CartelaSelection from './pages/CartelaSelection';
 import Rules from './pages/Rules';
@@ -14,6 +14,28 @@ function App() {
   const [selectedStake, setSelectedStake] = useState(null);
   const [selectedCartela, setSelectedCartela] = useState(null);
   const [isAdminApp, setIsAdminApp] = useState(false);
+
+  // Handle hash-based routing for admin panel
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove the #
+      if (hash === 'admin') {
+        setCurrentPage('admin');
+      } else if (hash === '') {
+        setCurrentPage('game');
+      }
+    };
+
+    // Check initial hash
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
 
   const handleStakeSelected = (stake) => {
