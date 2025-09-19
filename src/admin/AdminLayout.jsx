@@ -36,17 +36,55 @@ function AdminNav({ current, onNavigate }) {
 export default function AdminLayout({ onNavigate }) {
     const [tab, setTab] = useState('home');
     const [isAdmin, setIsAdmin] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
+
     useEffect(() => {
         (async () => {
             try {
                 const profile = await apiFetch('/user/profile');
-                setIsAdmin(profile?.role === 'admin');
-            } catch { setIsAdmin(false); }
+                setUserProfile(profile);
+                // Check if user has admin or super_admin role
+                const hasAdminAccess = profile?.role === 'admin' || profile?.role === 'super_admin';
+                setIsAdmin(hasAdminAccess);
+            } catch (error) {
+                console.error('Admin auth error:', error);
+                setIsAdmin(false);
+            }
         })();
     }, []);
 
-    if (isAdmin === null) return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900"><div className="max-w-md mx-auto p-4 text-white">Checking admin...</div></div>;
-    if (!isAdmin) return <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900"><div className="max-w-md mx-auto p-4 text-white">Unauthorized</div></div>;
+    if (isAdmin === null) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+                <div className="max-w-md mx-auto p-4 text-white text-center">
+                    <div className="mt-20">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                        <div>Checking admin access...</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAdmin) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+                <div className="max-w-md mx-auto p-4 text-white text-center">
+                    <div className="mt-20">
+                        <div className="text-6xl mb-4">🚫</div>
+                        <h2 className="text-xl font-bold mb-2">Access Denied</h2>
+                        <p className="text-white/80 mb-6">You don't have admin privileges to access this panel.</p>
+                        <button
+                            onClick={() => onNavigate?.('game')}
+                            className="bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors"
+                        >
+                            Go to Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
@@ -58,10 +96,22 @@ export default function AdminLayout({ onNavigate }) {
                         </div>
                         <span className="app-title">Admin</span>
                     </div>
-                    <button className="rules-button" onClick={() => onNavigate?.('game')}>
-                        <span className="rules-icon">🎮</span>
-                        <span>Game</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        {userProfile && (
+                            <div className="text-white/80 text-sm">
+                                <span className={`px-2 py-1 rounded-full text-xs ${userProfile.role === 'super_admin'
+                                    ? 'bg-red-500/20 text-red-400'
+                                    : 'bg-amber-500/20 text-amber-400'
+                                    }`}>
+                                    {userProfile.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+                                </span>
+                            </div>
+                        )}
+                        <button className="rules-button" onClick={() => onNavigate?.('game')}>
+                            <span className="rules-icon">🎮</span>
+                            <span>Game</span>
+                        </button>
+                    </div>
                 </div>
             </header>
             <main>
