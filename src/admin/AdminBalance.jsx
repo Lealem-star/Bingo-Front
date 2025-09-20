@@ -43,12 +43,12 @@ export default function AdminBalance() {
                             <span>Deposit</span>
                         </span>
                     </button>
-                    
+
                     <div className="text-center">
                         <div className="text-2xl font-bold text-amber-400 mb-1">Balance</div>
                         <div className="text-sm text-white/60">Management</div>
                     </div>
-                    
+
                     <button
                         onClick={() => setActiveTab('withdraw')}
                         className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 ${activeTab === 'withdraw'
@@ -135,10 +135,10 @@ export default function AdminBalance() {
                                     </div>
                                     <div className="text-sm">
                                         <span className={`px-3 py-2 rounded-full text-xs font-medium border ${getStatusColor(w.status)}`}>
-                                            {w.status === 'pending' && '⏳'} 
-                                            {w.status === 'completed' && '✅'} 
-                                            {w.status === 'cancelled' && '❌'} 
-                                            {w.status === 'failed' && '⚠️'} 
+                                            {w.status === 'pending' && '⏳'}
+                                            {w.status === 'completed' && '✅'}
+                                            {w.status === 'cancelled' && '❌'}
+                                            {w.status === 'failed' && '⚠️'}
                                             {w.status || 'pending'}
                                         </span>
                                     </div>
