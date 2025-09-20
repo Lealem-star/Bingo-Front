@@ -33,14 +33,6 @@ export default function AdminStats() {
 
     return (
         <div className="px-6 py-8 space-y-8 text-white">
-            {/* Header with Logo */}
-            <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                    <img src="/lb.png" alt="Love Bingo Logo" className="w-8 h-8" />
-                </div>
-                <span className="text-xl font-bold text-white">Admin Panel</span>
-            </div>
-
             {/* Today's Stats Section */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/5 rounded-2xl p-6 border border-white/10 shadow-lg">
