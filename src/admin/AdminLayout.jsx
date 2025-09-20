@@ -41,6 +41,7 @@ export default function AdminLayout({ onNavigate }) {
     useEffect(() => {
         (async () => {
             try {
+                // First try to get profile from API
                 const profile = await apiFetch('/user/profile');
                 setUserProfile(profile);
                 // Check if user has admin or super_admin role
@@ -48,6 +49,38 @@ export default function AdminLayout({ onNavigate }) {
                 setIsAdmin(hasAdminAccess);
             } catch (error) {
                 console.error('Admin auth error:', error);
+
+                // If API fails, check if we're in Telegram WebApp
+                if (window.Telegram?.WebApp?.initData) {
+                    console.log('Telegram WebApp detected, retrying auth...');
+                    try {
+                        // Try to authenticate via Telegram
+                        const initData = window.Telegram.WebApp.initData;
+                        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+                        const res = await fetch(`${apiBase}/auth/telegram/verify`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ initData })
+                        });
+
+                        if (res.ok) {
+                            const authResult = await res.json();
+                            localStorage.setItem('sessionId', authResult.sessionId);
+                            localStorage.setItem('user', JSON.stringify(authResult.user));
+
+                            // Now try to get profile again
+                            const profile = await apiFetch('/user/profile');
+                            setUserProfile(profile);
+                            const hasAdminAccess = profile?.role === 'admin' || profile?.role === 'super_admin';
+                            setIsAdmin(hasAdminAccess);
+                            return;
+                        }
+                    } catch (telegramError) {
+                        console.error('Telegram auth failed:', telegramError);
+                    }
+                }
+
+                // If all else fails, deny access
                 setIsAdmin(false);
             }
         })();
@@ -60,6 +93,9 @@ export default function AdminLayout({ onNavigate }) {
                     <div className="mt-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
                         <div>Checking admin access...</div>
+                        <div className="text-sm text-white/60 mt-2">
+                            {window.Telegram?.WebApp?.initData ? 'Telegram WebApp detected' : 'Direct browser access'}
+                        </div>
                     </div>
                 </div>
             </div>
