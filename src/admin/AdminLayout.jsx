@@ -126,6 +126,9 @@ export default function AdminLayout({ onNavigate }) {
                         <div className="text-sm text-white/60 mt-2">
                             {window.Telegram?.WebApp?.initData ? 'Telegram WebApp detected' : 'Direct browser access'}
                         </div>
+                        <div className="text-xs text-white/40 mt-4 p-2 bg-black/20 rounded">
+                            Debug: {window.Telegram?.WebApp?.initData ? 'Has initData' : 'No initData'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,6 +143,17 @@ export default function AdminLayout({ onNavigate }) {
                         <div className="text-6xl mb-4">🚫</div>
                         <h2 className="text-xl font-bold mb-2">Access Denied</h2>
                         <p className="text-white/80 mb-6">You don't have admin privileges to access this panel.</p>
+
+                        {/* Debug Information */}
+                        <div className="text-xs text-white/60 mb-4 p-3 bg-black/20 rounded text-left">
+                            <div><strong>Debug Info:</strong></div>
+                            <div>Telegram WebApp: {window.Telegram?.WebApp ? 'Yes' : 'No'}</div>
+                            <div>InitData: {window.Telegram?.WebApp?.initData ? 'Yes' : 'No'}</div>
+                            <div>SessionId: {localStorage.getItem('sessionId') ? 'Yes' : 'No'}</div>
+                            <div>User Profile: {userProfile ? JSON.stringify(userProfile) : 'None'}</div>
+                            <div>URL: {window.location.href}</div>
+                        </div>
+
                         <button
                             onClick={() => onNavigate?.('game')}
                             className="bg-amber-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors"
