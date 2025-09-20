@@ -33,17 +33,17 @@ export async function apiFetch(path, { method = 'GET', body, sessionId, headers 
     const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
     const doRequest = async (sid) => {
         const requestHeaders = { ...headers };
-        
+
         // Only set Content-Type for JSON, let browser set it for FormData
         if (!(body instanceof FormData)) {
             requestHeaders['Content-Type'] = 'application/json';
         }
-        
+
         if (sid) {
             requestHeaders['x-session'] = sid;
             requestHeaders['Authorization'] = `Bearer ${sid}`;
         }
-        
+
         return fetch(`${apiBase}${path}`, {
             method,
             headers: requestHeaders,

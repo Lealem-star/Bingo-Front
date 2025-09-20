@@ -28,17 +28,31 @@ export default function AdminHome() {
             formData.append('caption', form.caption);
             formData.append('active', form.active);
 
-            await apiFetch('/admin/posts', { 
-                method: 'POST', 
+            await apiFetch('/admin/posts', {
+                method: 'POST',
                 body: formData,
                 headers: {} // Let the browser set Content-Type for FormData
             });
-            
+
             setForm({ kind: 'image', file: null, caption: '', active: true });
             load();
         } catch (error) {
             console.error('Upload failed:', error);
-            alert('Upload failed. Please try again.');
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack,
+                formData: {
+                    kind: form.kind,
+                    file: form.file ? {
+                        name: form.file.name,
+                        size: form.file.size,
+                        type: form.file.type
+                    } : null,
+                    caption: form.caption,
+                    active: form.active
+                }
+            });
+            alert(`Upload failed: ${error.message}. Please try again.`);
         } finally {
             setUploading(false);
         }
