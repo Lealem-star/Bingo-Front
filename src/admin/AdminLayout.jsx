@@ -52,8 +52,9 @@ export default function AdminLayout({ onNavigate }) {
                 console.log('✅ Profile fetched successfully:', profile);
                 setUserProfile(profile);
                 // Check if user has admin or super_admin role
-                const hasAdminAccess = profile?.role === 'admin' || profile?.role === 'super_admin';
-                console.log('🔐 Admin access check:', { role: profile?.role, hasAdminAccess });
+                const userRole = profile?.user?.role || profile?.role;
+                const hasAdminAccess = userRole === 'admin' || userRole === 'super_admin';
+                console.log('🔐 Admin access check:', { role: userRole, hasAdminAccess, fullProfile: profile });
                 setIsAdmin(hasAdminAccess);
             } catch (error) {
                 console.error('❌ Admin auth error:', error);
@@ -85,8 +86,9 @@ export default function AdminLayout({ onNavigate }) {
                             const profile = await apiFetch('/user/profile');
                             console.log('✅ Profile fetched after Telegram auth:', profile);
                             setUserProfile(profile);
-                            const hasAdminAccess = profile?.role === 'admin' || profile?.role === 'super_admin';
-                            console.log('🔐 Final admin access check:', { role: profile?.role, hasAdminAccess });
+                            const userRole = profile?.user?.role || profile?.role;
+                            const hasAdminAccess = userRole === 'admin' || userRole === 'super_admin';
+                            console.log('🔐 Final admin access check:', { role: userRole, hasAdminAccess });
                             setIsAdmin(hasAdminAccess);
                             return;
                         } else {
@@ -179,11 +181,11 @@ export default function AdminLayout({ onNavigate }) {
                     <div className="flex items-center gap-2">
                         {userProfile && (
                             <div className="text-white/80 text-sm">
-                                <span className={`px-2 py-1 rounded-full text-xs ${userProfile.role === 'super_admin'
+                                <span className={`px-2 py-1 rounded-full text-xs ${(userProfile.user?.role || userProfile.role) === 'super_admin'
                                     ? 'bg-red-500/20 text-red-400'
                                     : 'bg-amber-500/20 text-amber-400'
                                     }`}>
-                                    {userProfile.role === 'super_admin' ? 'Super Admin' : 'Admin'}
+                                    {(userProfile.user?.role || userProfile.role) === 'super_admin' ? 'Super Admin' : 'Admin'}
                                 </span>
                             </div>
                         )}
