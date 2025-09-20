@@ -257,11 +257,11 @@ export function AuthProvider({ children }) {
                         <img
                             src="/lb.png"
                             alt="Love Bingo Logo"
-                            className="w-24 h-24 mx-auto animate-pulse"
+                            className="w-16 h-16 mx-auto animate-pulse"
                         />
                         {/* Search animation overlay */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-8 h-8 border-2 border-pink-400/30 border-t-pink-400 rounded-full animate-spin"></div>
+                            <div className="w-6 h-6 border-2 border-pink-400/30 border-t-pink-400 rounded-full animate-spin"></div>
                         </div>
                     </div>
 
