@@ -27,68 +27,64 @@ export default function AdminBalance() {
 
     return (
         <div className="px-6 py-8 space-y-8 text-white">
+            {/* Toggle Buttons */}
+            <div className="flex justify-between items-center">
+                <button
+                    onClick={() => setActiveTab('deposit')}
+                    className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 ${activeTab === 'deposit'
+                        ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-xl shadow-emerald-500/40 ring-2 ring-emerald-400'
+                        : 'bg-gray-300 text-gray-600 hover:bg-gray-400 border border-gray-400'
+                        }`}
+                >
+                    <span className="flex items-center gap-3">
+                        <span className="text-2xl">💰</span>
+                        <span>Deposit</span>
+                    </span>
+                </button>
+
+                <button
+                    onClick={() => setActiveTab('withdraw')}
+                    className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 ${activeTab === 'withdraw'
+                        ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-xl shadow-red-500/40 ring-2 ring-red-400'
+                        : 'bg-gray-300 text-gray-600 hover:bg-gray-400 border border-gray-400'
+                        }`}
+                >
+                    <span className="flex items-center gap-3">
+                        <span className="text-2xl">💸</span>
+                        <span>Withdraw</span>
+                    </span>
+                </button>
+            </div>
+
             {/* Main Content Area */}
             <div className="bg-gradient-to-br from-white/8 to-white/4 backdrop-blur-sm rounded-3xl p-8 border border-white/15 shadow-2xl shadow-purple-500/10">
-                {/* Toggle Buttons */}
-                <div className="flex justify-between items-center mb-8">
-                    <button
-                        onClick={() => setActiveTab('deposit')}
-                        className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 ${activeTab === 'deposit'
-                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-xl shadow-green-500/25 ring-2 ring-green-400/50'
-                            : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white border border-white/20'
-                            }`}
-                    >
-                        <span className="flex items-center gap-3">
-                            <span className="text-2xl">💰</span>
-                            <span>Deposit</span>
-                        </span>
-                    </button>
-
-                    <div className="text-center">
-                        <div className="text-2xl font-bold text-amber-400 mb-1">Balance</div>
-                        <div className="text-sm text-white/60">Management</div>
-                    </div>
-
-                    <button
-                        onClick={() => setActiveTab('withdraw')}
-                        className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 ${activeTab === 'withdraw'
-                            ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl shadow-orange-500/25 ring-2 ring-orange-400/50'
-                            : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white border border-white/20'
-                            }`}
-                    >
-                        <span className="flex items-center gap-3">
-                            <span className="text-2xl">💸</span>
-                            <span>Withdraw</span>
-                        </span>
-                    </button>
-                </div>
 
                 {/* Table Header */}
-                <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-gradient-to-r from-white/12 to-white/8 rounded-xl border border-white/20">
-                    <div className="font-bold text-amber-400 flex items-center gap-2">
-                        <span>👤</span>
-                        Player Name
+                <div className="grid grid-cols-3 gap-4 mb-6 p-6 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-indigo-600/20 backdrop-blur-sm rounded-2xl border-2 border-purple-400/30 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
+                    <div className="font-bold text-white flex items-center gap-3 text-lg">
+                        <span className="text-2xl">👤</span>
+                        <span className="bg-white/20 px-3 py-1 rounded-full text-sm">Player Name</span>
                     </div>
                     {activeTab === 'deposit' ? (
                         <>
-                            <div className="font-bold text-amber-400 flex items-center gap-2">
-                                <span>💰</span>
-                                Deposit Amount
+                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                                <span className="text-2xl">💰</span>
+                                <span className="bg-green-500/30 px-3 py-1 rounded-full text-sm">Deposit Amount</span>
                             </div>
-                            <div className="font-bold text-amber-400 flex items-center gap-2">
-                                <span>🎁</span>
-                                Gift
+                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                                <span className="text-2xl">🎁</span>
+                                <span className="bg-yellow-500/30 px-3 py-1 rounded-full text-sm">Gift</span>
                             </div>
                         </>
                     ) : (
                         <>
-                            <div className="font-bold text-amber-400 flex items-center gap-2">
-                                <span>💸</span>
-                                Withdraw Amount
+                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                                <span className="text-2xl">💸</span>
+                                <span className="bg-orange-500/30 px-3 py-1 rounded-full text-sm">Withdraw Amount</span>
                             </div>
-                            <div className="font-bold text-amber-400 flex items-center gap-2">
-                                <span>🏦</span>
-                                Account Number
+                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                                <span className="text-2xl">🏦</span>
+                                <span className="bg-blue-500/30 px-3 py-1 rounded-full text-sm">Account Number</span>
                             </div>
                         </>
                     )}
