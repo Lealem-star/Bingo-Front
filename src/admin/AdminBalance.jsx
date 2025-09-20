@@ -60,35 +60,35 @@ export default function AdminBalance() {
             <div className="bg-gradient-to-br from-white/8 to-white/4 backdrop-blur-sm rounded-3xl p-8 border border-white/15 shadow-2xl shadow-purple-500/10">
 
                 {/* Table Header */}
-                <div className="grid grid-cols-3 gap-4 mb-6 p-6 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-indigo-600/20 backdrop-blur-sm rounded-2xl border-2 border-purple-400/30 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]">
-                    <div className="font-bold text-white flex items-center gap-3 text-lg">
+                <button className="w-full grid grid-cols-3 gap-4 mb-6 p-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl border-2 border-purple-400 shadow-lg hover:shadow-xl hover:from-purple-700 hover:to-blue-700 active:scale-95 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                    <div className="font-bold text-white flex items-center justify-center gap-3 text-lg">
                         <span className="text-2xl">👤</span>
-                        <span className="bg-white/20 px-3 py-1 rounded-full text-sm">Player Name</span>
+                        <span>Player Name</span>
                     </div>
                     {activeTab === 'deposit' ? (
                         <>
-                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                            <div className="font-bold text-white flex items-center justify-center gap-3 text-lg">
                                 <span className="text-2xl">💰</span>
-                                <span className="bg-green-500/30 px-3 py-1 rounded-full text-sm">Deposit Amount</span>
+                                <span>Deposit Amount</span>
                             </div>
-                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                            <div className="font-bold text-white flex items-center justify-center gap-3 text-lg">
                                 <span className="text-2xl">🎁</span>
-                                <span className="bg-yellow-500/30 px-3 py-1 rounded-full text-sm">Gift</span>
+                                <span>Gift</span>
                             </div>
                         </>
                     ) : (
                         <>
-                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                            <div className="font-bold text-white flex items-center justify-center gap-3 text-lg">
                                 <span className="text-2xl">💸</span>
-                                <span className="bg-orange-500/30 px-3 py-1 rounded-full text-sm">Withdraw Amount</span>
+                                <span>Withdraw Amount</span>
                             </div>
-                            <div className="font-bold text-white flex items-center gap-3 text-lg">
+                            <div className="font-bold text-white flex items-center justify-center gap-3 text-lg">
                                 <span className="text-2xl">🏦</span>
-                                <span className="bg-blue-500/30 px-3 py-1 rounded-full text-sm">Account Number</span>
+                                <span>Account Number</span>
                             </div>
                         </>
                     )}
-                </div>
+                </button>
 
                 {/* Table Content */}
                 <div className="space-y-4">
