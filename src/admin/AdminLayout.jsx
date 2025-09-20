@@ -123,11 +123,31 @@ export default function AdminLayout({ onNavigate }) {
             <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
                 <div className="max-w-md mx-auto p-4 text-white text-center">
                     <div className="mt-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                        <div>Checking admin access...</div>
-                        <div className="text-sm text-white/60 mt-2">
+                        {/* Animated Love Bingo Logo */}
+                        <div className="relative mb-6">
+                            <img
+                                src="/lb.png"
+                                alt="Love Bingo Logo"
+                                className="w-24 h-24 mx-auto animate-pulse"
+                            />
+                            {/* Search animation overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            </div>
+                        </div>
+
+                        <div className="text-lg font-semibold mb-2">Searching for admin access...</div>
+                        <div className="text-sm text-white/60 mb-4">
                             {window.Telegram?.WebApp?.initData ? 'Telegram WebApp detected' : 'Direct browser access'}
                         </div>
+
+                        {/* Animated dots */}
+                        <div className="flex justify-center space-x-1">
+                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        </div>
+
                         <div className="text-xs text-white/40 mt-4 p-2 bg-black/20 rounded">
                             Debug: {window.Telegram?.WebApp?.initData ? 'Has initData' : 'No initData'}
                         </div>
