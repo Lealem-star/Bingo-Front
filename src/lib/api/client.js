@@ -29,18 +29,25 @@ async function reauthenticateAndGetSession() {
     return null;
 }
 
-export async function apiFetch(path, { method = 'GET', body, sessionId } = {}) {
+export async function apiFetch(path, { method = 'GET', body, sessionId, headers = {} } = {}) {
     const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
     const doRequest = async (sid) => {
-        const headers = { 'Content-Type': 'application/json' };
-        if (sid) {
-            headers['x-session'] = sid;
-            headers['Authorization'] = `Bearer ${sid}`;
+        const requestHeaders = { ...headers };
+        
+        // Only set Content-Type for JSON, let browser set it for FormData
+        if (!(body instanceof FormData)) {
+            requestHeaders['Content-Type'] = 'application/json';
         }
+        
+        if (sid) {
+            requestHeaders['x-session'] = sid;
+            requestHeaders['Authorization'] = `Bearer ${sid}`;
+        }
+        
         return fetch(`${apiBase}${path}`, {
             method,
-            headers,
-            body: body ? JSON.stringify(body) : undefined,
+            headers: requestHeaders,
+            body: body instanceof FormData ? body : (body ? JSON.stringify(body) : undefined),
         });
     };
 
