@@ -143,7 +143,16 @@ export default function AdminLayout({ onNavigate }) {
                                 </span>
                             </div>
                         )}
-                        <button className="rules-button" onClick={() => onNavigate?.('game')}>
+                        <button
+                            className="rules-button"
+                            onClick={() => {
+                                // Remove admin parameter and go to game
+                                const url = new URL(window.location);
+                                url.searchParams.delete('admin');
+                                window.history.pushState({}, '', url);
+                                onNavigate?.('game');
+                            }}
+                        >
                             <span className="rules-icon">🎮</span>
                             <span>Game</span>
                         </button>

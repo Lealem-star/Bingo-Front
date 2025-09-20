@@ -15,32 +15,31 @@ function App() {
   const [selectedCartela, setSelectedCartela] = useState(null);
   const [isAdminApp, setIsAdminApp] = useState(false);
 
-  // Handle hash-based routing for admin panel
+  // Handle query parameter routing for admin panel
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1); // Remove the #
-      console.log('Hash changed to:', hash); // Debug log
-      if (hash === 'admin') {
+    const checkAdminParam = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isAdmin = urlParams.get('admin') === 'true';
+      console.log('Admin parameter check:', isAdmin); // Debug log
+      if (isAdmin) {
         setCurrentPage('admin');
-      } else if (hash === '') {
+      } else {
         setCurrentPage('game');
       }
     };
 
-    // Check initial hash immediately
-    const initialHash = window.location.hash.slice(1);
-    console.log('Initial hash:', initialHash); // Debug log
-    if (initialHash === 'admin') {
-      setCurrentPage('admin');
-    } else {
-      setCurrentPage('game');
-    }
+    // Check initial admin parameter
+    checkAdminParam();
 
-    // Listen for hash changes
-    window.addEventListener('hashchange', handleHashChange);
+    // Listen for URL changes (including query parameter changes)
+    const handleUrlChange = () => {
+      checkAdminParam();
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
 
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleUrlChange);
     };
   }, []);
 
@@ -60,9 +59,10 @@ function App() {
   };
 
   const renderPage = () => {
-    // Check hash again as fallback
-    const currentHash = window.location.hash.slice(1);
-    if (currentHash === 'admin' && currentPage !== 'admin') {
+    // Check query parameters as fallback
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdmin = urlParams.get('admin') === 'true';
+    if (isAdmin && currentPage !== 'admin') {
       setCurrentPage('admin');
     }
 
