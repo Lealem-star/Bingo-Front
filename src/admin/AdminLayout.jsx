@@ -190,41 +190,6 @@ export default function AdminLayout({ onNavigate }) {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
-            <header className="p-4">
-                <div className="app-header">
-                    <div className="app-logo">
-                        <div className="logo-circle">
-                            <img src="/lb.png" alt="Love Bingo Logo" className="logo-image" />
-                        </div>
-                        <span className="app-title">Admin</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        {userProfile && (
-                            <div className="text-white/80 text-sm">
-                                <span className={`px-2 py-1 rounded-full text-xs ${(userProfile.user?.role || userProfile.role) === 'super_admin'
-                                    ? 'bg-red-500/20 text-red-400'
-                                    : 'bg-amber-500/20 text-amber-400'
-                                    }`}>
-                                    {(userProfile.user?.role || userProfile.role) === 'super_admin' ? 'Super Admin' : 'Admin'}
-                                </span>
-                            </div>
-                        )}
-                        <button
-                            className="rules-button"
-                            onClick={() => {
-                                // Remove admin parameter and go to game
-                                const url = new URL(window.location);
-                                url.searchParams.delete('admin');
-                                window.history.pushState({}, '', url);
-                                onNavigate?.('game');
-                            }}
-                        >
-                            <span className="rules-icon">🎮</span>
-                            <span>Game</span>
-                        </button>
-                    </div>
-                </div>
-            </header>
             <main>
                 {tab === 'home' && <AdminHome />}
                 {tab === 'balance' && <AdminBalance />}
