@@ -90,39 +90,6 @@ export default function AdminBalance() {
 
     return (
         <div className="px-6 py-8 space-y-8 text-white">
-            {/* Header with Logo and Search */}
-            <div className="flex justify-between items-center mb-6">
-                {/* Logo */}
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <img src="/lb.png" alt="Love Bingo Logo" className="w-6 h-6" />
-                    </div>
-                    <span className="text-xl font-bold text-white">Admin Panel</span>
-                </div>
-
-                {/* Search Bar */}
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Search by user name..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-64 px-4 py-2 pl-10 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                    />
-                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60">
-                        🔍
-                    </div>
-                    {searchTerm && (
-                        <button
-                            onClick={() => setSearchTerm('')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80"
-                        >
-                            ✕
-                        </button>
-                    )}
-                </div>
-            </div>
-
             {/* Toggle Buttons */}
             <div className="flex justify-between items-center mb-8">
                 <button
@@ -154,6 +121,7 @@ export default function AdminBalance() {
 
             {/* Main Content Area */}
             <div className="bg-gradient-to-br from-white/8 to-white/4 backdrop-blur-sm rounded-3xl p-8 border border-white/15 shadow-2xl shadow-purple-500/10">
+                <h2 className="text-white text-2xl font-bold mb-8 text-center bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Balance</h2>
 
                 {/* Table Header */}
                 <div className="w-full grid grid-cols-3 gap-4 mb-6">
